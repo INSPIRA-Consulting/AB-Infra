@@ -1,0 +1,20 @@
+# Diretório e cache do Terraform
+.terraform/
+
+# Lock de providers (opcional manter)
+#.terraform.lock.hcl
+
+# Arquivos de estado
+*.tfstate
+*.tfstate.backup
+
+# Logs
+crash.log
+
+# Overrides locais
+override.tf
+*_override.tf
+
+# Variáveis locais (se contiverem senhas)
+terraform.tfvars
+*.auto.tfvars
