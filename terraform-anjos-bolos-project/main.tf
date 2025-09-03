@@ -44,10 +44,23 @@ module "instances" {
     # database_security_group_id = module.security.database_security_group_id
 }
 
-# module "elb" {
-#     source = "./modules/elb"
-#     public_subnet_1a_id = module.network.public_subnet_1a_id
-#     public_subnet_1b_id = module.network.public_subnet_1b_id
-#     vpc_id              = module.network.vpc_id
-# }
+# Load Balancers com todas as referências necessárias
+module "elb" {
+    source = "./modules/elb"
+    
+    # IDs da VPC e Subnets
+    vpc_id              = module.network.vpc_id
+    public_subnet_1a_id = module.network.public_subnet_1a_id
+    public_subnet_1b_id = module.network.public_subnet_1b_id
+    private_subnet_1a_id = module.network.private_subnet_1a_id
+    private_subnet_1b_id = module.network.private_subnet_1b_id
+    
+    # # Security Groups
+    # backend_security_group_id = module.security.backend_security_group_id
+    # database_security_group_id = module.security.database_security_group_id
+    
+    # IDs das instâncias
+    backend_instance_ids = module.instances.backend_instance_ids
+    database_instance_ids = module.instances.database_instance_ids
+}
 # ------------------------------------------------------------------------------

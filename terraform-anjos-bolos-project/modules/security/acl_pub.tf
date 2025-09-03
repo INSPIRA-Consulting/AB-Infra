@@ -38,7 +38,7 @@ resource "aws_network_acl_rule" "public_in_ssh" {
   egress         = false
   protocol       = "tcp"
   rule_action    = "allow"
-  cidr_block     = "<IP_PUB_CONFEITARIA>/32"
+  cidr_block     = "10.18.32.0/20"
   from_port      = 22
   to_port        = 22
 }
