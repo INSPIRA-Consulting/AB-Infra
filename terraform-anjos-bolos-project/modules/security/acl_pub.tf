@@ -3,10 +3,7 @@ resource "aws_network_acl" "public" {
     vpc_id = aws_vpc.main.id
     tags = { Name = "acl-pub-anjos-bolos" }
 }
-resource "aws_network_acl" "private" {
-    vpc_id = aws_vpc.main.id
-    tags = { Name = "acl-priv-anjos-bolos" }
-}
+
 # ------------------------------------------------------------
 
 # Configuração das Regras da ACL Pública ---------------------
