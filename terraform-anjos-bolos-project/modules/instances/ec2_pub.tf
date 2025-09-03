@@ -18,7 +18,7 @@ resource "aws_instance" "front-end1a" {
 
   # vpc_security_group_ids = []
 
-  subnet_id = aws_subnet.public-1a.id
+  subnet_id = var.public_subnet_1a_id
 }
 
 resource "aws_instance" "front-end1b" {
@@ -37,6 +37,6 @@ resource "aws_instance" "front-end1b" {
 
   # vpc_security_group_ids = []
 
-  subnet_id = aws_subnet.public-1b.id
+  subnet_id = var.public_subnet_1b_id
 }
 

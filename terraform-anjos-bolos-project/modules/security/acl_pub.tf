@@ -1,6 +1,6 @@
 # Configuração das ACLs --------------------------------------
 resource "aws_network_acl" "public" {
-    vpc_id = aws_vpc.main.id
+    vpc_id = var.vpc_id
     tags = { Name = "acl-pub-anjos-bolos" }
 }
 
@@ -69,11 +69,11 @@ resource "aws_network_acl_rule" "public_out_all" {
 # Associar a ACL pública às subnets públicas ------------------
 resource "aws_network_acl_association" "public_a" {
   network_acl_id = aws_network_acl.public.id
-  subnet_id      = aws_subnet.public_a.id
+  subnet_id      = var.public_subnet_1a_id
 }
 
 resource "aws_network_acl_association" "public_b" {
   network_acl_id = aws_network_acl.public.id
-  subnet_id      = aws_subnet.public_b.id
+  subnet_id      = var.public_subnet_1b_id
 }
 # -------------------------------------------------------------

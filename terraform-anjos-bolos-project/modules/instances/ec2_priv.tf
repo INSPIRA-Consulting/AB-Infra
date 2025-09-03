@@ -2,6 +2,7 @@
 
 # Configuração das Instâncias EC2 Back-End ------------------------------------------------
 
+
 resource "aws_instance" "back-end1a" {
   ami           = var.ami_id
   instance_type = var.instance_type_back
@@ -16,9 +17,9 @@ resource "aws_instance" "back-end1a" {
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = []
+  # vpc_security_group_ids = [var.backend_security_group_id]
 
-  subnet_id = aws_subnet.private-1a.id
+  subnet_id = var.private_subnet_1a_id
 }
 
 resource "aws_instance" "back-end1b" {
@@ -35,9 +36,9 @@ resource "aws_instance" "back-end1b" {
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = []
+  # vpc_security_group_ids = [var.backend_security_group_id]
 
-    subnet_id = output.private_subnet_1a_id
+  subnet_id = var.private_subnet_1b_id
 }
 
 
@@ -59,14 +60,14 @@ resource "aws_instance" "database1a" {
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = []
+  #vpc_security_group_ids = [var.database_security_group_id]
 
-  subnet_id = aws_subnet.private-1a.id
+  subnet_id = var.private_subnet_1a_id
 }
 
 resource "aws_instance" "database1b" {
   ami           = var.ami_id
-  instance_type = var.instance_type_back
+  instance_type = var.instance_type_db
 
   tags = {
     Name = "Banco-Dados-1b"
@@ -78,7 +79,7 @@ resource "aws_instance" "database1b" {
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = []
+  #vpc_security_group_ids = [var.database_security_group_id]
 
-  subnet_id = aws_subnet.private-1b.id
+  subnet_id = var.private_subnet_1b_id
 }

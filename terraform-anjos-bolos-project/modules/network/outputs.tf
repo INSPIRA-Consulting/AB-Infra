@@ -1,5 +1,10 @@
 # -------------------- Outputs --------------------
 
+output "vpc_id" {
+  description = "ID da VPC criada"
+  value       = aws_vpc.main.id
+}
+
 # Subnets Públicas
 output "public_subnet_1a_id" {
   description = "ID da subnet pública na AZ 1a"

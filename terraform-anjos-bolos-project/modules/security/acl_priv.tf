@@ -1,6 +1,6 @@
 # Configuração da ACL Privada --------------------------------
 resource "aws_network_acl" "private" {
-    vpc_id = aws_vpc.main.id
+    vpc_id = var.vpc_id
     tags = { Name = "acl-priv-anjos-bolos" }
 }
 // -----------------------------------------------------------
@@ -56,11 +56,11 @@ resource "aws_network_acl_rule" "private_out_all" {
 # Associar a ACL privada às subnets privadas
 resource "aws_network_acl_association" "private_a" {
   network_acl_id = aws_network_acl.private.id
-  subnet_id      = aws_subnet.private_a.id
+  subnet_id      = var.private_subnet_1a_id
 }
 
 resource "aws_network_acl_association" "private_b" {
   network_acl_id = aws_network_acl.private.id
-  subnet_id      = aws_subnet.private_b.id
+  subnet_id      = var.private_subnet_1b_id
 }
 // -----------------------------------------------------------
