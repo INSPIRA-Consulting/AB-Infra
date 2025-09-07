@@ -26,3 +26,9 @@ output "private_subnet_1b_id" {
   description = "ID da subnet privada na AZ 1b"
   value       = aws_subnet.private-1b.id
 }
+
+# Route Tables
+output "private_route_table_ids" {
+  description = "IDs das route tables privadas"
+  value       = [aws_route_table.private-rt.id]
+}

@@ -1,4 +1,3 @@
-# Configuração do Terraform ----------------------------------------------------
 terraform {
   required_providers {
     aws = {
@@ -18,49 +17,59 @@ provider "aws" {
 # Módulos ----------------------------------------------------------------------
 module "network" {
   source = "./modules/network"
-} 
+}
 
 module "security" {
-    source = "./modules/security"
-    vpc_id              = module.network.vpc_id
-    public_subnet_1a_id = module.network.public_subnet_1a_id
-    public_subnet_1b_id = module.network.public_subnet_1b_id
-    private_subnet_1a_id = module.network.private_subnet_1a_id
-    private_subnet_1b_id = module.network.private_subnet_1b_id
+  source               = "./modules/security"
+  vpc_id               = module.network.vpc_id
+  public_subnet_1a_id  = module.network.public_subnet_1a_id
+  public_subnet_1b_id  = module.network.public_subnet_1b_id
+  private_subnet_1a_id = module.network.private_subnet_1a_id
+  private_subnet_1b_id = module.network.private_subnet_1b_id
 }
 
 # Criamos as instâncias com as referências das subnets e security groups
 module "instances" {
-    source = "./modules/instances"
-    
-    # Subnets
-    private_subnet_1a_id = module.network.private_subnet_1a_id
-    private_subnet_1b_id = module.network.private_subnet_1b_id
-    public_subnet_1a_id  = module.network.public_subnet_1a_id
-    public_subnet_1b_id  = module.network.public_subnet_1b_id
-    
-    # # Security Groups
-    # backend_security_group_id  = module.security.backend_security_group_id
-    # database_security_group_id = module.security.database_security_group_id
+  source = "./modules/instances"
+
+  # Subnets
+  private_subnet_1a_id = module.network.private_subnet_1a_id
+  private_subnet_1b_id = module.network.private_subnet_1b_id
+  public_subnet_1a_id  = module.network.public_subnet_1a_id
+  public_subnet_1b_id  = module.network.public_subnet_1b_id
+
+  # Security Groups
+  # backend_security_group_id  = module.security.backend_security_group_id
+  # database_security_group_id = module.security.database_security_group_id
 }
 
 # Load Balancers com todas as referências necessárias
 module "elb" {
-    source = "./modules/elb"
-    
-    # IDs da VPC e Subnets
-    vpc_id              = module.network.vpc_id
-    public_subnet_1a_id = module.network.public_subnet_1a_id
-    public_subnet_1b_id = module.network.public_subnet_1b_id
-    private_subnet_1a_id = module.network.private_subnet_1a_id
-    private_subnet_1b_id = module.network.private_subnet_1b_id
-    
-    # # Security Groups
-    # backend_security_group_id = module.security.backend_security_group_id
-    # database_security_group_id = module.security.database_security_group_id
-    
-    # IDs das instâncias
-    backend_instance_ids = module.instances.backend_instance_ids
-    database_instance_ids = module.instances.database_instance_ids
+  source = "./modules/elb"
+
+  # IDs da VPC e Subnets
+  vpc_id               = module.network.vpc_id
+  public_subnet_1a_id  = module.network.public_subnet_1a_id
+  public_subnet_1b_id  = module.network.public_subnet_1b_id
+  private_subnet_1a_id = module.network.private_subnet_1a_id
+  private_subnet_1b_id = module.network.private_subnet_1b_id
+
+  # Security Groups
+  # backend_security_group_id = module.security.backend_security_group_id
+  # database_security_group_id = module.security.database_security_group_id
+
+  # IDs das instâncias
+  backend_instance_ids  = module.instances.backend_instance_ids
+  database_instance_ids = module.instances.database_instance_ids
 }
-# ------------------------------------------------------------------------------
+
+# Storage (S3 Buckets e VPC Endpoints)
+module "storage" {
+  source = "./modules/storage"
+
+  # Configurações gerais
+  vpc_id = module.network.vpc_id
+
+  # Route tables para o endpoint VPC
+  private_route_table_ids = module.network.private_route_table_ids
+}
