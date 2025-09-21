@@ -23,20 +23,25 @@ variable "private_subnet_1b_id" {
   type        = string
 }
 
-variable "database_instance_ids" {
-  description = "Lista de IDs das instâncias de banco de dados"
-  type        = list(string)
+# variable "backend_instance_ids" {
+#   description = "Lista de IDs das instâncias de backend"
+  #   type        = list(string)
+  # }
+
+  variable "public_instance_1a-id" {
+  description = "ID da instância pública na AZ 1a"
+  type        = string
 }
 
-variable "backend_instance_ids" {
-  description = "Lista de IDs das instâncias de backend"
-  type        = list(string)
+variable "public_instance_1b-id" {
+  description = "ID da instância pública na AZ 1a"
+  type        = string
 }
 
-# variable "database_security_group_id" {
-#   description = "ID do Security Group para o Load Balancer do Database"
-#   type        = string
-# }
+variable "public_security_group_id" {
+  description = "ID do Security Group para o Load Balancer das Instâncias Públicas"
+  type        = string
+}
 
 # variable "backend_security_group_id" {
 #   description = "ID do Security Group para o Load Balancer do Backend"

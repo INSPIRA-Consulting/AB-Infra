@@ -42,12 +42,12 @@ variable "public_subnet_1b_id" {
   type        = string
 }
 
-# variable "backend_security_group_id" {
-#   description = "ID do Security Group para instâncias backend"
-#   type        = string
-# }
+variable "private_security_group_ids" {
+  description = "ID do Security Group para instâncias privadas"
+  type        = string
+}
 
-# variable "database_security_group_id" {
-#   description = "ID do Security Group para instâncias de banco de dados"
-#   type        = string
-# }
+variable "public_security_group_ids" {
+  description = "ID do Security Group para instâncias públicas"
+  type        = string
+}

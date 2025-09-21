@@ -30,5 +30,5 @@ output "private_subnet_1b_id" {
 # Route Tables
 output "private_route_table_ids" {
   description = "IDs das route tables privadas"
-  value       = [aws_route_table.private-rt.id]
+  value       = [aws_route_table.rtb-private.id]
 }

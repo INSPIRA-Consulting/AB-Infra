@@ -11,13 +11,15 @@ resource "aws_instance" "back-end1a" {
     Name = "Back-End-1a"
   }
 
+  key_name = "vockey"
+
   ebs_block_device {
     device_name = "/dev/sda1"
     volume_size = 20
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = [var.backend_security_group_id]
+  vpc_security_group_ids = [var.private_security_group_ids]
 
   subnet_id = var.private_subnet_1a_id
 }
@@ -30,13 +32,15 @@ resource "aws_instance" "back-end1b" {
     Name = "Back-End-1b"
   }
 
+  key_name = "vockey"
+
   ebs_block_device {
     device_name = "/dev/sda1"
     volume_size = 20
     volume_type = "gp3"
   }
 
-  # vpc_security_group_ids = [var.backend_security_group_id]
+  vpc_security_group_ids = [var.private_security_group_ids]
 
   subnet_id = var.private_subnet_1b_id
 }
@@ -54,13 +58,15 @@ resource "aws_instance" "database1a" {
     Name = "Banco-Dados-1a"
   }
 
+  key_name = "vockey"
+
   ebs_block_device {
     device_name = "/dev/sda1"
-    volume_size = 20
+    volume_size = 50
     volume_type = "gp3"
   }
 
-  #vpc_security_group_ids = [var.database_security_group_id]
+  vpc_security_group_ids = [var.private_security_group_ids]
 
   subnet_id = var.private_subnet_1a_id
 }
@@ -73,13 +79,15 @@ resource "aws_instance" "database1b" {
     Name = "Banco-Dados-1b"
   }
 
+  key_name = "vockey"
+
   ebs_block_device {
     device_name = "/dev/sda1"
-    volume_size = 20
+    volume_size = 50
     volume_type = "gp3"
   }
 
-  #vpc_security_group_ids = [var.database_security_group_id]
+  vpc_security_group_ids = [var.private_security_group_ids]
 
   subnet_id = var.private_subnet_1b_id
 }

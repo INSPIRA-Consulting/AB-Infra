@@ -39,8 +39,8 @@ module "instances" {
   public_subnet_1b_id  = module.network.public_subnet_1b_id
 
   # Security Groups
-  # backend_security_group_id  = module.security.backend_security_group_id
-  # database_security_group_id = module.security.database_security_group_id
+  private_security_group_ids = module.security.sg_private_ids
+  public_security_group_ids  = module.security.sg_public_ids
 }
 
 # Load Balancers com todas as referências necessárias
@@ -53,14 +53,15 @@ module "elb" {
   public_subnet_1b_id  = module.network.public_subnet_1b_id
   private_subnet_1a_id = module.network.private_subnet_1a_id
   private_subnet_1b_id = module.network.private_subnet_1b_id
-
-  # Security Groups
-  # backend_security_group_id = module.security.backend_security_group_id
-  # database_security_group_id = module.security.database_security_group_id
+ 
+  # Security Group para o Load Balancer
+  public_security_group_id = module.security.public_security_group_id
 
   # IDs das instâncias
-  backend_instance_ids  = module.instances.backend_instance_ids
-  database_instance_ids = module.instances.database_instance_ids
+  # backend_instance_ids = module.instances.backend_instance_ids
+  # Instâncias públicas
+  public_instance_1a-id = module.instances.public_instance_1a-id
+  public_instance_1b-id = module.instances.public_instance_1b-id
 }
 
 # Storage (S3 Buckets e VPC Endpoints)
