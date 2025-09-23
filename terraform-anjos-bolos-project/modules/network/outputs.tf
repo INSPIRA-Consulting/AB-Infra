@@ -1,4 +1,4 @@
-# -------------------- Outputs --------------------
+# Outputs do módulo de rede
 
 output "vpc_id" {
   description = "ID da VPC criada"
@@ -30,5 +30,15 @@ output "private_subnet_1b_id" {
 # Route Tables
 output "private_route_table_ids" {
   description = "IDs das route tables privadas"
-  value       = [aws_route_table.rtb-private.id]
+  value       = [aws_route_table.rtb-private-1a.id, aws_route_table.rtb-private-1b.id]
+}
+
+output "private_route_table_1a_id" {
+  description = "ID da route table privada 1a"
+  value       = aws_route_table.rtb-private-1a.id
+}
+
+output "private_route_table_1b_id" {
+  description = "ID da route table privada 1b"
+  value       = aws_route_table.rtb-private-1b.id
 }

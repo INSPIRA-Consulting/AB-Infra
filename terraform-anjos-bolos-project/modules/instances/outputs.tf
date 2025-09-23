@@ -17,3 +17,13 @@ output "public_instance_1b-id" {
   description = "ID da instância pública na AZ 1b"
   value       = aws_instance.front-end1b.id
 }
+
+output "private_instance_1a-id" {
+  description = "ID da instância privada na AZ 1a"
+  value       = aws_instance.back-end1a.id
+}
+
+output "private_instance_1b-id" {
+  description = "ID da instância privada na AZ 1b"
+  value       = aws_instance.back-end1b.id
+}

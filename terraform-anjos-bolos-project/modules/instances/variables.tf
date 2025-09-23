@@ -44,10 +44,10 @@ variable "public_subnet_1b_id" {
 
 variable "private_security_group_ids" {
   description = "ID do Security Group para instâncias privadas"
-  type        = string
+  type        = list(string)
 }
 
 variable "public_security_group_ids" {
   description = "ID do Security Group para instâncias públicas"
-  type        = string
+  type        = list(string)
 }

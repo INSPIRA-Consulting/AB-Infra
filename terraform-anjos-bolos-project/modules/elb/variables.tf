@@ -38,13 +38,23 @@ variable "public_instance_1b-id" {
   type        = string
 }
 
+variable "private_instance_1a-id" {
+  description = "ID da instância privada na AZ 1a"
+  type        = string
+}
+
+variable "private_instance_1b-id" {
+  description = "ID da instância privada na AZ 1b"
+  type        = string
+}
+
 variable "public_security_group_id" {
   description = "ID do Security Group para o Load Balancer das Instâncias Públicas"
   type        = string
 }
 
-# variable "backend_security_group_id" {
-#   description = "ID do Security Group para o Load Balancer do Backend"
-#   type        = string
-# }
+variable "private_security_group_id" {
+  description = "ID do Security Group para o Load Balancer do Backend"
+  type        = string
+}
 

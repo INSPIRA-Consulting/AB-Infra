@@ -56,9 +56,12 @@ module "elb" {
  
   # Security Group para o Load Balancer
   public_security_group_id = module.security.public_security_group_id
-
+  private_security_group_id = module.security.private_security_group_id
+  
   # IDs das instâncias
-  # backend_instance_ids = module.instances.backend_instance_ids
+  private_instance_1a-id = module.instances.private_instance_1a-id
+  private_instance_1b-id = module.instances.private_instance_1b-id
+
   # Instâncias públicas
   public_instance_1a-id = module.instances.public_instance_1a-id
   public_instance_1b-id = module.instances.public_instance_1b-id

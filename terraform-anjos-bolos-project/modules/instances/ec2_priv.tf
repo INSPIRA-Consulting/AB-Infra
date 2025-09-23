@@ -19,8 +19,10 @@ resource "aws_instance" "back-end1a" {
     volume_type = "gp3"
   }
 
-  vpc_security_group_ids = [var.private_security_group_ids]
-
+  vpc_security_group_ids = var.private_security_group_ids
+  
+  associate_public_ip_address = false
+  
   subnet_id = var.private_subnet_1a_id
 }
 
@@ -40,7 +42,9 @@ resource "aws_instance" "back-end1b" {
     volume_type = "gp3"
   }
 
-  vpc_security_group_ids = [var.private_security_group_ids]
+  vpc_security_group_ids = var.private_security_group_ids
+  
+  associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1b_id
 }
@@ -66,7 +70,9 @@ resource "aws_instance" "database1a" {
     volume_type = "gp3"
   }
 
-  vpc_security_group_ids = [var.private_security_group_ids]
+  vpc_security_group_ids = var.private_security_group_ids
+
+  associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1a_id
 }
@@ -87,7 +93,9 @@ resource "aws_instance" "database1b" {
     volume_type = "gp3"
   }
 
-  vpc_security_group_ids = [var.private_security_group_ids]
+  vpc_security_group_ids = var.private_security_group_ids
+  
+  associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1b_id
 }

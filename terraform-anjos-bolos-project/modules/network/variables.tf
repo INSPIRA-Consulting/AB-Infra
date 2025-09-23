@@ -4,17 +4,6 @@ variable "vpc_cidr_block" {
   description = "Bloco CIDR para a VPC"
 }
 
-
-variable "enable_dns_support" {
-  default     = false
-  description = "Habilitar suporte DNS na VPC"
-}
-
-variable "enable_dns_hostnames" {
-  default     = false
-  description = "Habilitar nomes de host DNS na VPC"
-}
-
 variable "vpc_name" {
   default     = "vpc-anjos-bolos"
   description = "Nome da VPC"
