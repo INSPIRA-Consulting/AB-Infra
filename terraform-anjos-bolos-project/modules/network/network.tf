@@ -8,7 +8,7 @@ resource "aws_vpc" "main" {
 # ------------------------------------------------------------------------------
 
 # Configuração das Subnets -----------------------------------------------------
-resource "aws_subnet" "public-1a" {
+resource "aws_subnet" "public_1a" {
   vpc_id     = aws_vpc.main.id
   cidr_block = var.public_subnet_1a_cidr
 
@@ -16,7 +16,7 @@ resource "aws_subnet" "public-1a" {
   tags              = { Name = var.subnet_pub1a_name }
 }
 
-resource "aws_subnet" "public-1b" {
+resource "aws_subnet" "public_1b" {
   vpc_id     = aws_vpc.main.id
   cidr_block = var.public_subnet_1b_cidr
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "public-1b" {
   tags              = { Name = var.subnet_pub1b_name }
 }
 
-resource "aws_subnet" "private-1a" {
+resource "aws_subnet" "private_1a" {
   vpc_id     = aws_vpc.main.id
   cidr_block = var.private_subnet_1a_cidr
 
@@ -32,7 +32,7 @@ resource "aws_subnet" "private-1a" {
   tags              = { Name = var.subnet_priv1a_name }
 }
 
-resource "aws_subnet" "private-1b" {
+resource "aws_subnet" "private_1b" {
   vpc_id     = aws_vpc.main.id
   cidr_block = var.private_subnet_1b_cidr
 
@@ -61,16 +61,16 @@ resource "aws_eip" "nat_gateway_eip_1b" {
 
 resource "aws_nat_gateway" "main_1a" {
   allocation_id = aws_eip.nat_gateway_eip_1a.id
-  subnet_id     = aws_subnet.public-1a.id
+  subnet_id     = aws_subnet.public_1a.id
 }
 
 resource "aws_nat_gateway" "main_1b" {
   allocation_id = aws_eip.nat_gateway_eip_1b.id
-  subnet_id     = aws_subnet.public-1b.id
+  subnet_id     = aws_subnet.public_1b.id
 }
 
 # Configuração da Route Table Pública ------------------------------------------
-resource "aws_route_table" "rtb-public" {
+resource "aws_route_table" "rtb_public" {
   vpc_id = aws_vpc.main.id
 
   tags = { Name = var.rtb_pub_name }
@@ -81,21 +81,21 @@ resource "aws_route_table" "rtb-public" {
   }
 }
 
-resource "aws_route_table_association" "public-1a" {
-  subnet_id      = aws_subnet.public-1a.id
-  route_table_id = aws_route_table.rtb-public.id
+resource "aws_route_table_association" "public_1a" {
+  subnet_id      = aws_subnet.public_1a.id
+  route_table_id = aws_route_table.rtb_public.id
 }
 
-resource "aws_route_table_association" "public-1b" {
-  subnet_id      = aws_subnet.public-1b.id
-  route_table_id = aws_route_table.rtb-public.id
+resource "aws_route_table_association" "public_1b" {
+  subnet_id      = aws_subnet.public_1b.id
+  route_table_id = aws_route_table.rtb_public.id
 }
 # ------------------------------------------------------------------------------
 
 # Configuração da Route Table Privada ------------------------------------------
-resource "aws_route_table" "rtb-private-1a" {
-  vpc_id         = aws_vpc.main.id
-  tags           = { Name = "${var.rtb_priv_name}-1a" }
+resource "aws_route_table" "rtb_private_1a" {
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "${var.rtb_priv_name}-1a" }
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -103,9 +103,9 @@ resource "aws_route_table" "rtb-private-1a" {
   }
 }
 
-resource "aws_route_table" "rtb-private-1b" {
-  vpc_id         = aws_vpc.main.id
-  tags           = { Name = "${var.rtb_priv_name}-1b" }
+resource "aws_route_table" "rtb_private_1b" {
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "${var.rtb_priv_name}-1b" }
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -113,13 +113,13 @@ resource "aws_route_table" "rtb-private-1b" {
   }
 }
 
-resource "aws_route_table_association" "private-1a" {
-  subnet_id      = aws_subnet.private-1a.id
-  route_table_id = aws_route_table.rtb-private-1a.id
+resource "aws_route_table_association" "private_1a" {
+  subnet_id      = aws_subnet.private_1a.id
+  route_table_id = aws_route_table.rtb_private_1a.id
 }
 
-resource "aws_route_table_association" "private-1b" {
-  subnet_id      = aws_subnet.private-1b.id
-  route_table_id = aws_route_table.rtb-private-1b.id
+resource "aws_route_table_association" "private_1b" {
+  subnet_id      = aws_subnet.private_1b.id
+  route_table_id = aws_route_table.rtb_private_1b.id
 }
 # ------------------------------------------------------------------------------

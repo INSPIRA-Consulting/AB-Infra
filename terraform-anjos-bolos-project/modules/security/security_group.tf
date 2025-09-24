@@ -1,6 +1,6 @@
-resource "aws_security_group" "sg-acesso_remoto-pub" {
+resource "aws_security_group" "sg_acesso_remoto_pub" {
   description = "Permite acesso SSH para as EC2s Publicas"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 22
@@ -18,9 +18,9 @@ resource "aws_security_group" "sg-acesso_remoto-pub" {
 }
 
 
-resource "aws_security_group" "sg-acesso_remoto-priv" {
+resource "aws_security_group" "sg_acesso_remoto_priv" {
   description = "Permite acesso SSH para as EC2s Privadas"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 22
@@ -38,9 +38,9 @@ resource "aws_security_group" "sg-acesso_remoto-priv" {
 }
 
 
-resource "aws_security_group" "sg-front_end-pub" {
+resource "aws_security_group" "sg_front_end_pub" {
   description = "Permite acesso HTTP e HTTPS para as EC2 Publicas"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -64,9 +64,9 @@ resource "aws_security_group" "sg-front_end-pub" {
   }
 }
 
-resource "aws_security_group" "sg-back_end-priv" {
+resource "aws_security_group" "sg_back_end_priv" {
   description = "Permite acesso HTTP e HTTPS para as EC2s Privadas"
-  vpc_id = var.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80

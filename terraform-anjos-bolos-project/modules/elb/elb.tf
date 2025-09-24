@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "web_tg" {
   }
 }
 
-resource "aws_lb" "alb-principal" {
+resource "aws_lb" "alb_public" {
   name               = "alb-principal"
   internal           = false
   load_balancer_type = "application"
@@ -26,7 +26,7 @@ resource "aws_lb" "alb-principal" {
 }
 
 resource "aws_lb_listener" "http_listener" {
-  load_balancer_arn = aws_lb.alb-principal.arn
+  load_balancer_arn = aws_lb.alb_public.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -38,13 +38,13 @@ resource "aws_lb_listener" "http_listener" {
 
 resource "aws_lb_target_group_attachment" "ec2_1_attach" {
   target_group_arn = aws_lb_target_group.web_tg.arn
-  target_id        = var.public_instance_1a-id
+  target_id        = var.public_instance_1a_id
   port             = 8080
 }
 
 resource "aws_lb_target_group_attachment" "ec2_2_attach" {
   target_group_arn = aws_lb_target_group.web_tg.arn
-  target_id        = var.public_instance_1b-id
+  target_id        = var.public_instance_1b_id
   port             = 8080
 }
 
@@ -62,7 +62,7 @@ resource "aws_lb_target_group" "backend_tg" {
   }
 }
 
-resource "aws_lb" "alb-backend" {
+resource "aws_lb" "alb_private" {
   name               = "alb-backend"
   internal           = true
   load_balancer_type = "application"
@@ -76,7 +76,7 @@ resource "aws_lb" "alb-backend" {
 }
 
 resource "aws_lb_listener" "backend_listener" {
-  load_balancer_arn = aws_lb.alb-backend.arn
+  load_balancer_arn = aws_lb.alb_private.arn
   port              = "8080"
   protocol          = "HTTP"
 
@@ -88,12 +88,12 @@ resource "aws_lb_listener" "backend_listener" {
 
 resource "aws_lb_target_group_attachment" "backend_1_attach" {
   target_group_arn = aws_lb_target_group.backend_tg.arn
-  target_id        = var.private_instance_1a-id
+  target_id        = var.private_instance_1a_id
   port             = 8080
 }
 
 resource "aws_lb_target_group_attachment" "backend_2_attach" {
   target_group_arn = aws_lb_target_group.backend_tg.arn
-  target_id        = var.private_instance_1b-id
+  target_id        = var.private_instance_1b_id
   port             = 8080
 }

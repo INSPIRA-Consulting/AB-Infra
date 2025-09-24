@@ -25,25 +25,25 @@ variable "private_subnet_1b_id" {
 
 # variable "backend_instance_ids" {
 #   description = "Lista de IDs das instâncias de backend"
-  #   type        = list(string)
-  # }
+#   type        = list(string)
+# }
 
-  variable "public_instance_1a-id" {
+variable "public_instance_1a_id" {
   description = "ID da instância pública na AZ 1a"
   type        = string
 }
 
-variable "public_instance_1b-id" {
-  description = "ID da instância pública na AZ 1a"
+variable "public_instance_1b_id" {
+  description = "ID da instância pública na AZ 1b"
   type        = string
 }
 
-variable "private_instance_1a-id" {
+variable "private_instance_1a_id" {
   description = "ID da instância privada na AZ 1a"
   type        = string
 }
 
-variable "private_instance_1b-id" {
+variable "private_instance_1b_id" {
   description = "ID da instância privada na AZ 1b"
   type        = string
 }

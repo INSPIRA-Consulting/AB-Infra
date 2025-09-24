@@ -1,7 +1,7 @@
 # Configuração das ACLs --------------------------------------
 resource "aws_network_acl" "public" {
-    vpc_id = var.vpc_id
-    tags = { Name = "acl-pub-anjos-bolos" }
+  vpc_id = var.vpc_id
+  tags   = { Name = "acl-pub-anjos-bolos" }
 }
 
 # ------------------------------------------------------------

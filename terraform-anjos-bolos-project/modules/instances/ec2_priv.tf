@@ -3,13 +3,11 @@
 # Configuração das Instâncias EC2 Back-End ------------------------------------------------
 
 
-resource "aws_instance" "back-end1a" {
+resource "aws_instance" "backend_1a" {
   ami           = var.ami_id
   instance_type = var.instance_type_back
 
-  tags = {
-    Name = "Back-End-1a"
-  }
+  tags = { Name = "Back-End-1a" }
 
   key_name = "vockey"
 
@@ -20,19 +18,17 @@ resource "aws_instance" "back-end1a" {
   }
 
   vpc_security_group_ids = var.private_security_group_ids
-  
+
   associate_public_ip_address = false
-  
+
   subnet_id = var.private_subnet_1a_id
 }
 
-resource "aws_instance" "back-end1b" {
+resource "aws_instance" "backend_1b" {
   ami           = var.ami_id
   instance_type = var.instance_type_back
 
-  tags = {
-    Name = "Back-End-1b"
-  }
+  tags = { Name = "Back-End-1b" }
 
   key_name = "vockey"
 
@@ -43,7 +39,7 @@ resource "aws_instance" "back-end1b" {
   }
 
   vpc_security_group_ids = var.private_security_group_ids
-  
+
   associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1b_id
@@ -54,13 +50,11 @@ resource "aws_instance" "back-end1b" {
 
 # Configuração das Instâncias EC2 Banco de Dados ------------------------------------------------
 
-resource "aws_instance" "database1a" {
+resource "aws_instance" "database_1a" {
   ami           = var.ami_id
   instance_type = var.instance_type_db
 
-  tags = {
-    Name = "Banco-Dados-1a"
-  }
+  tags = { Name = "Banco-Dados-1a" }
 
   key_name = "vockey"
 
@@ -77,13 +71,11 @@ resource "aws_instance" "database1a" {
   subnet_id = var.private_subnet_1a_id
 }
 
-resource "aws_instance" "database1b" {
+resource "aws_instance" "database_1b" {
   ami           = var.ami_id
   instance_type = var.instance_type_db
 
-  tags = {
-    Name = "Banco-Dados-1b"
-  }
+  tags = { Name = "Banco-Dados-1b" }
 
   key_name = "vockey"
 
@@ -94,7 +86,7 @@ resource "aws_instance" "database1b" {
   }
 
   vpc_security_group_ids = var.private_security_group_ids
-  
+
   associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1b_id
