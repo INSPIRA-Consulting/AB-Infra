@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Script para copiar chave labsuser.pem via SCP e conectar via SSH
+
+# Configurações
+KEY_FILE="../../../../Downloads/labsuser.pem"
+REMOTE_USER="ubuntu"
+REMOTE_HOST=$(cd .. && terraform output -raw public_ip_1a 2>/dev/null || echo "your_server_ip")
+REMOTE_PATH="/home/$REMOTE_USER/"
+
+# Verificar se a chave existe localmente
+if [ ! -f "$KEY_FILE" ]; then
+    echo "Erro: Arquivo $KEY_FILE não encontrado no diretório atual"
+    exit 1
+fi
+
+# Copiar a chave via SCP
+echo "Copiando $KEY_FILE para $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+scp -i "$KEY_FILE" "$KEY_FILE" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+
+# Verificar se a cópia foi bem-sucedida
+if [ $? -eq 0 ]; then
+    echo "Chave copiada com sucesso!"
+    echo "Conectando via SSH..."
+    ssh -i "$KEY_FILE" "$REMOTE_USER@$REMOTE_HOST"
+else
+    echo "Erro ao copiar a chave"
+    exit 1
+fi
