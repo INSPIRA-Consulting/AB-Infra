@@ -1,5 +1,3 @@
-# TODO: Adicionar o Security Group na EC2
-
 # Configuração das Instâncias EC2 Back-End ------------------------------------------------
 
 

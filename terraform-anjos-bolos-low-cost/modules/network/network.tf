@@ -23,7 +23,6 @@ resource "aws_subnet" "private_1a" {
   availability_zone = var.az_1a
   tags              = { Name = var.subnet_priv1a_name }
 }
-
 # ------------------------------------------------------------------------------
 
 # Configuração do Internet Gateway ---------------------------------------------
@@ -43,7 +42,6 @@ resource "aws_nat_gateway" "main_1a" {
   allocation_id = aws_eip.nat_gateway_eip_1a.id
   subnet_id     = aws_subnet.public_1a.id
 }
-
 
 # Configuração da Route Table Pública ------------------------------------------
 resource "aws_route_table" "rtb_public" {

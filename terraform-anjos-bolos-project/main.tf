@@ -75,3 +75,7 @@ module "storage" {
   # Route tables para o endpoint VPC
   private_route_table_ids = module.network.private_route_table_ids
 }
+
+output "public_ip_1a" {
+  value = module.instances.public_ip_1a  
+}
