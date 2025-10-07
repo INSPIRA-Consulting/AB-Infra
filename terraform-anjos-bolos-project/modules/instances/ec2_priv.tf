@@ -9,7 +9,7 @@ resource "aws_instance" "backend_1a" {
 
   tags = { Name = "Back-End-1a" }
 
-  key_name = "vockey"
+  key_name = var.key_pair_name
 
   ebs_block_device {
     device_name = "/dev/sda1"
@@ -30,7 +30,7 @@ resource "aws_instance" "backend_1b" {
 
   tags = { Name = "Back-End-1b" }
 
-  key_name = "vockey"
+  key_name = var.key_pair_name
 
   ebs_block_device {
     device_name = "/dev/sda1"
@@ -56,7 +56,7 @@ resource "aws_instance" "database_1a" {
 
   tags = { Name = "Banco-Dados-1a" }
 
-  key_name = "vockey"
+  key_name = var.key_pair_name
 
   ebs_block_device {
     device_name = "/dev/sda1"
@@ -77,7 +77,7 @@ resource "aws_instance" "database_1b" {
 
   tags = { Name = "Banco-Dados-1b" }
 
-  key_name = "vockey"
+  key_name = var.key_pair_name
 
   ebs_block_device {
     device_name = "/dev/sda1"

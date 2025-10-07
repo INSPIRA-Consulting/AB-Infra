@@ -51,3 +51,15 @@ variable "public_security_group_ids" {
   description = "ID do Security Group para instâncias públicas"
   type        = list(string)
 }
+
+variable "key_pair_name" {
+  description = "Nome do Key Pair para acesso SSH"
+  type        = string
+  default     = "vockey"
+}
+
+variable "private_key_pem" {
+  description = "Conteúdo da chave privada em formato PEM"
+  type        = string
+  sensitive   = true
+}

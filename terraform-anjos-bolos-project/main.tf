@@ -14,6 +14,28 @@ provider "aws" {
 }
 # ------------------------------------------------------------------------------
 
+# Criação automática do Key Pair para acesso SSH
+resource "tls_private_key" "main_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "main_key_pair" {
+  key_name   = "anjos-bolos-key"
+  public_key = tls_private_key.main_key.public_key_openssh
+  
+  tags = {
+    Name = "anjos-bolos-key"
+    Project = "terraform-anjos-bolos"
+  }
+}
+
+resource "local_file" "private_key" {
+  content         = tls_private_key.main_key.private_key_pem
+  filename        = "${path.module}/keys/anjos-bolos-key.pem"
+  file_permission = "0400"
+}
+
 # Módulos ----------------------------------------------------------------------
 module "network" {
   source = "./modules/network"
@@ -41,6 +63,12 @@ module "instances" {
   # Security Groups
   private_security_group_ids = module.security.sg_private_ids
   public_security_group_ids  = module.security.sg_public_ids
+  
+  # Key Pair
+  key_pair_name = aws_key_pair.main_key_pair.key_name
+  
+  # Chave privada para provisioners
+  private_key_pem = tls_private_key.main_key.private_key_pem
 }
 
 # Load Balancers com todas as referências necessárias
@@ -66,16 +94,12 @@ module "instances" {
 # }
 
 # Storage (S3 Buckets e VPC Endpoints)
-module "storage" {
-  source = "./modules/storage"
+# module "storage" {
+#   source = "./modules/storage"
 
-  # Configurações gerais
-  vpc_id = module.network.vpc_id
+#   # Configurações gerais
+#   vpc_id = module.network.vpc_id
 
-  # Route tables para o endpoint VPC
-  private_route_table_ids = module.network.private_route_table_ids
-}
-
-output "public_ip_1a" {
-  value = module.instances.public_ip_1a  
-}
+#   # Route tables para o endpoint VPC
+#   private_route_table_ids = module.network.private_route_table_ids
+# }
