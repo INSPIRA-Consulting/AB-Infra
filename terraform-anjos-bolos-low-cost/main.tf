@@ -74,7 +74,7 @@ module "instances" {
   private_key_pem = tls_private_key.main_key.private_key_pem
 }
 
-# # Storage (S3 Buckets e VPC Endpoints)
+# Storage (S3 Buckets e VPC Endpoints) - Desabilitado temporariamente
 # module "storage" {
 #   source = "./modules/storage"
 

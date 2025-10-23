@@ -1,0 +1,16 @@
+services:
+  web_server:
+    # Usa a imagem oficial do NGINX
+    image: nginx:latest
+    container_name: frontend_nginx
+    
+    # Mapeia as portas: Porta_Externa:Porta_Interna
+    ports:
+      - "80:80"
+    
+    # Mapeia o volume: Pasta_Local:Pasta_No_Container
+    volumes:
+      - /home/ubuntu/frontend:/usr/share/nginx/html
+    
+    # Reinicia o contêiner automaticamente
+    restart: unless-stopped

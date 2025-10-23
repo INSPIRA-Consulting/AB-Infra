@@ -19,4 +19,14 @@ resource "aws_instance" "backend_1a" {
   associate_public_ip_address = false
 
   subnet_id = var.private_subnet_1a_id
+
+  user_data = join("\n\n", [
+    "#!/bin/bash",
+    file("${path.module}/../../scripts/instalar_docker_ubuntu.sh"),
+    templatefile("${path.module}/../../scripts/instalar_java.sh", {
+      arquivo_docker_compose = base64encode(file("${path.module}/../../scripts/compose-api.yaml"))
+    })
+  ])
+
+  user_data_replace_on_change = true
 }

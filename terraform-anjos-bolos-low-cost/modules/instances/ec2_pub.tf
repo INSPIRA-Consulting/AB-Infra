@@ -20,6 +20,14 @@ resource "aws_instance" "frontend_1a" {
 
   subnet_id = var.public_subnet_1a_id
 
+  user_data = join("\n\n", [
+    "#!/bin/bash",
+    file("${path.module}/../../scripts/instalar_docker_ubuntu.sh"),
+    file("${path.module}/../../scripts/instalar_nginx.sh")
+  ])
+
+  user_data_replace_on_change = true
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
@@ -30,6 +38,11 @@ resource "aws_instance" "frontend_1a" {
   provisioner "file" {
     content     = var.private_key_pem
     destination = "/tmp/anjos-bolos-low-cost-key.pem"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/../../scripts/compose-nginx.yaml"
+    destination = "/home/ubuntu/compose.yaml"
   }
 
   provisioner "remote-exec" {
