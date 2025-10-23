@@ -9,6 +9,27 @@ resource "aws_security_group" "sg_acesso_remoto_pub" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5672
+    to_port     = 5672
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 15672
+    to_port     = 15672
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -164,5 +185,41 @@ resource "aws_security_group" "sg_back_end_priv" {
     to_port     = 123
     protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "rabbitmq_sg" {
+  name        = "rabbitmq-sg"
+  description = "Permite trafego para RabbitMQ"
+  vpc_id      = var.vpc_id
+ 
+  # Regra para RabbitMQ AMQP (Porta 5672)
+  ingress {
+    description = "RabbitMQ AMQP"
+    from_port   = 5672
+    to_port     = 5672
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: Cuidado com isso em produção!
+  }
+
+  # Regra para RabbitMQ Management UI (Porta 15672)
+  ingress {
+    description = "RabbitMQ UI"
+    from_port   = 15672
+    to_port     = 15672
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: Cuidado com isso em produção!
+  }
+
+  # Regra de Saída (Outbound) - Permite todo o tráfego de saída
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "SG RabbitMQ"
   }
 }

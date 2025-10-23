@@ -31,7 +31,7 @@ output "sg_private_ids" {
 
 output "sg_public_ids" {
   description = "IDs dos Security Groups públicos"
-  value       = [aws_security_group.sg_front_end_pub.id, aws_security_group.sg_acesso_remoto_pub.id]
+  value       = [aws_security_group.sg_front_end_pub.id, aws_security_group.sg_acesso_remoto_pub.id, aws_security_group.rabbitmq_sg.id]
 }
 
 output "public_security_group_id" {
@@ -42,4 +42,10 @@ output "public_security_group_id" {
 output "private_security_group_id" {
   description = "ID do Security Group privado principal"
   value       = aws_security_group.sg_back_end_priv.id
+}
+
+output "rabbitmq_sg_id" {
+  description = "ID do Security Group para RabbitMQ"
+  value       = aws_security_group.rabbitmq_sg.id
+  
 }

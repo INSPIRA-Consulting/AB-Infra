@@ -23,7 +23,8 @@ resource "aws_instance" "frontend_1a" {
   user_data = join("\n\n", [
     "#!/bin/bash",
     file("${path.module}/../../scripts/instalar_docker_ubuntu.sh"),
-    file("${path.module}/../../scripts/instalar_nginx.sh")
+    file("${path.module}/../../scripts/instalar_nginx.sh"),
+    file("${path.module}/../../scripts/instalar_rabbitmq_ubuntu.sh")
   ])
 
   user_data_replace_on_change = true
@@ -45,11 +46,20 @@ resource "aws_instance" "frontend_1a" {
     destination = "/home/ubuntu/compose.yaml"
   }
 
+  provisioner "file" {
+    source      = "${path.module}/../../scripts/compose-rabbitmq.yaml"
+    destination = "/home/ubuntu/compose-rabbitmq.yaml"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo mv /tmp/anjos-bolos-low-cost-key.pem /home/ubuntu/anjos-bolos-low-cost-key.pem",
       "sudo chmod 400 /home/ubuntu/anjos-bolos-low-cost-key.pem",
-      "sudo chown ubuntu:ubuntu /home/ubuntu/anjos-bolos-low-cost-key.pem"
+      "sudo chown ubuntu:ubuntu /home/ubuntu/anjos-bolos-low-cost-key.pem",
+      "echo 'Aguardando Docker estar pronto...'",
+      "sleep 30",
+      "echo 'Iniciando RabbitMQ via Docker Compose...'",
+      "cd /home/ubuntu && sudo docker-compose -f compose-rabbitmq.yaml up -d"
     ]
   }
 }
