@@ -18,3 +18,8 @@ override.tf
 # Variáveis locais (se contiverem senhas)
 terraform.tfvars
 *.auto.tfvars
+
+# Pasta de chaves SSH - não versionar
+keys/
+*.pem
+*.key

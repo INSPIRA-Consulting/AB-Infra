@@ -1,5 +1,4 @@
-# Configuração das Instâncias EC2 Back-End ------------------------------------------------
-
+# Configuração das Instâncias EC2 Back-End
 
 resource "aws_instance" "backend_1a" {
   ami           = var.ami_id
@@ -7,7 +6,7 @@ resource "aws_instance" "backend_1a" {
 
   tags = { Name = "Back-End-1a" }
 
-  key_name = "vockey"
+  key_name = var.key_pair_name
 
   ebs_block_device {
     device_name = "/dev/sda1"
