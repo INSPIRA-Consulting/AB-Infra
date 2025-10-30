@@ -13,7 +13,7 @@ variable "instance_type_front" {
 variable "instance_type_back" {
   description = "Tipo de instância para o backend"
   type        = string
-  default     = "t2.micro"
+  default     = "t3.small"
 }
 
 variable "private_subnet_1a_id" {

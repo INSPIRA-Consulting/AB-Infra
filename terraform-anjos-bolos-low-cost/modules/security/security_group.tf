@@ -145,6 +145,13 @@ resource "aws_security_group" "sg_back_end_priv" {
     cidr_blocks = ["10.25.0.0/26"]
   }
 
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    self        = true
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

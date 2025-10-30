@@ -25,6 +25,10 @@ resource "aws_instance" "backend_1a" {
     file("${path.module}/../../scripts/instalar_docker_ubuntu.sh"),
     templatefile("${path.module}/../../scripts/instalar_java.sh", {
       arquivo_docker_compose = base64encode(file("${path.module}/../../scripts/compose-api.yaml"))
+    }),
+    templatefile("${path.module}/../../scripts/instalar_mysql_ubuntu.sh", {
+      create_user_sql = base64encode(file("${path.module}/../../scripts/create_user.sql"))
+      init_sql        = base64encode(file("${path.module}/../../scripts/init.sql"))
     })
   ])
 

@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/local"
       version = "~> 2.4"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.4"
+    }
   }
 
   required_version = ">= 1.2"
@@ -74,10 +78,18 @@ module "instances" {
   private_key_pem = tls_private_key.main_key.private_key_pem
 }
 
-# Storage (S3 Buckets e VPC Endpoints) - Desabilitado temporariamente
-# module "storage" {
-#   source = "./modules/storage"
+# Storage (S3 Buckets) - Habilitado para uso da Lambda
+module "storage" {
+  source = "./modules/storage"
+  
+  # Configurações gerais
+  vpc_id = module.network.vpc_id
+}
 
-#   # Configurações gerais
-#   vpc_id = module.network.vpc_id
-# }
+# Lambda Functions
+module "lambda" {
+  source = "./modules/lambda"
+
+  # Configurações da Lambda
+  s3_bucket_name = module.storage.bucket_raw_name
+}

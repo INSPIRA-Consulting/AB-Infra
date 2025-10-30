@@ -60,11 +60,23 @@ resource "aws_instance" "frontend_1a" {
       "sudo cloud-init status --wait || echo 'Timeout cloud-init'",
       "echo 'Verificando arquivos Docker Compose...'",
       "ls -la /home/ubuntu/compose*.yaml",
-      "echo 'Iniciando RabbitMQ via Docker Compose...'",
-      "cd /home/ubuntu && sudo docker compose -f compose-rabbitmq.yaml up -d",
+      "echo 'Configurando IP do backend para proxy reverso...'",
+      "sed -i 's/PLACEHOLDER_IP_API/${aws_instance.backend_1a.private_ip}:8080/g' /home/ubuntu/nginx-config/default.conf",
+      "echo 'IP do backend configurado: ${aws_instance.backend_1a.private_ip}:8080'",
+      "cat /home/ubuntu/nginx-config/default.conf",
+      "echo 'Verificando se porta 80 está livre...'",
+      "sudo lsof -i :80 || echo 'Porta 80 está livre'",
+      "echo 'Iniciando NGINX via Docker Compose...'",
+      "cd /home/ubuntu && sudo docker compose -f compose.yaml up -d",
+      "echo 'Aguardando NGINX iniciar...'",
+      "sleep 5",
       "echo 'Verificando containers...'",
       "sudo docker ps",
-      "echo 'RabbitMQ Docker iniciado com sucesso!'"
+      "echo 'Testando NGINX localmente...'",
+      "curl -I http://localhost:80 || echo 'NGINX ainda não respondeu'",
+      "echo 'Iniciando RabbitMQ via Docker Compose...'",
+      "cd /home/ubuntu && sudo docker compose -f compose-rabbitmq.yaml up -d",
+      "echo 'NGINX e RabbitMQ Docker iniciados com sucesso!'"
     ]
   }
 }
