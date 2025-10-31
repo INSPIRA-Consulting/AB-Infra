@@ -23,3 +23,5 @@ terraform.tfvars
 keys/
 *.pem
 *.key
+
+/modules/lambda/*.zip

@@ -16,6 +16,10 @@ terraform {
       source  = "hashicorp/archive"
       version = "~> 2.4"
     }
+    github = {
+      source  = "hashicorp/github"
+      version = "~> 6.0"
+    }
   }
 
   required_version = ">= 1.2"
@@ -23,6 +27,11 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
+}
+
+provider "github" {
+  owner = "INSPIRA-Consulting"
+  token = var.github_token
 }
 
 # Criação automática do Key Pair para acesso SSH
@@ -92,4 +101,14 @@ module "lambda" {
 
   # Configurações da Lambda
   s3_bucket_name = module.storage.bucket_raw_name
+}
+
+module "github_actions" {
+  source = "./modules/github_actions"
+
+  access_key = tls_private_key.main_key.private_key_pem
+  private_ip_host = module.instances.private_ip_1a
+  public_ip_host = module.instances.public_ip_1a
+
+  providers = { github = github }
 }
