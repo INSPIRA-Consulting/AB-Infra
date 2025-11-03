@@ -11,18 +11,18 @@ sudo chown ubuntu:ubuntu /usr/share/api
 sudo chown ubuntu:ubuntu /home/ubuntu/backend
 echo "Diretórios criados com sucesso."
 
-# Decodifica e salva o Docker Compose da API
-echo "Criando arquivo compose.yaml..."
-echo "${arquivo_docker_compose}" | base64 -d > /home/ubuntu/compose.yaml
+# Copia o Docker Compose da API
+echo "Copiando arquivo compose.yaml..."
+cp /tmp/compose-api.yaml /home/ubuntu/compose.yaml
 sudo chown ubuntu:ubuntu /home/ubuntu/compose.yaml
-echo "Arquivo compose.yaml criado com sucesso!"
+echo "Arquivo compose.yaml copiado com sucesso!"
 
 # Verifica se o arquivo foi criado corretamente
 if [ -f /home/ubuntu/compose.yaml ]; then
     echo "Verificando conteúdo do compose.yaml:"
     cat /home/ubuntu/compose.yaml
 else
-    echo "ERRO: Arquivo compose.yaml não foi criado!"
+    echo "ERRO: Arquivo compose.yaml não foi copiado!"
     exit 1
 fi
 

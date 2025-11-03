@@ -38,12 +38,6 @@ echo "==================================="
 # Espera o MySQL estar pronto
 sleep 5
 
-# Decodifica e salva o script create_user.sql
-echo "${create_user_sql}" | base64 -d > /tmp/create_user.sql
-
-# Decodifica e salva o script init.sql
-echo "${init_sql}" | base64 -d > /tmp/init.sql
-
 # Executa o script create_user.sql
 if [ -f /tmp/create_user.sql ]; then
     echo "Executando create_user.sql..."

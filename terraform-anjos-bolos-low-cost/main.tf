@@ -110,5 +110,4 @@ module "github_actions" {
   private_ip_host = module.instances.private_ip_1a
   public_ip_host = module.instances.public_ip_1a
 
-  providers = { github = github }
 }
