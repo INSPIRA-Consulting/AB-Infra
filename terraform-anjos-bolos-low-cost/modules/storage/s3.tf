@@ -4,6 +4,12 @@ resource "aws_s3_bucket" "bucket_raw" {
   force_destroy = true 
 }
 
+# Bucket para backups do banco de dados
+resource "aws_s3_bucket" "bucket_backup" {
+  bucket        = "anjos-bolos-backup"
+  force_destroy = true
+}
+
 # 12.1. Desativa o Block Public Access para permitir acesso público
 resource "aws_s3_bucket_public_access_block" "bloco_acesso_publico_s3" {
   bucket = aws_s3_bucket.bucket_raw.id

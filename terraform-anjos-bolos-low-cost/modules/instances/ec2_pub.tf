@@ -52,8 +52,29 @@ resource "aws_instance" "frontend_1a" {
       "sudo chown ubuntu:ubuntu /home/ubuntu/anjos-bolos-low-cost-key.pem",
       "echo 'Aguardando cloud-init terminar...'",
       "sudo cloud-init status --wait || echo 'Timeout cloud-init'",
-      "echo 'Verificando arquivos Docker Compose...'",
-      "ls -la /home/ubuntu/compose*.yaml",
+      "echo 'Frontend configurado. NGINX será iniciado após backend estar pronto.'"
+    ]
+  }
+}
+
+# Configura NGINX após ambas instâncias estarem prontas
+resource "null_resource" "configure_nginx" {
+  depends_on = [aws_instance.frontend_1a, aws_instance.backend_1a]
+
+  triggers = {
+    frontend_id = aws_instance.frontend_1a.id
+    backend_id  = aws_instance.backend_1a.id
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = var.private_key_pem
+    host        = aws_instance.frontend_1a.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
       "echo 'Configurando IP do backend para proxy reverso...'",
       "sed -i 's/PLACEHOLDER_IP_API/${aws_instance.backend_1a.private_ip}:8080/g' /home/ubuntu/nginx-config/default.conf",
       "echo 'IP do backend configurado: ${aws_instance.backend_1a.private_ip}:8080'",

@@ -1,0 +1,40 @@
+services:
+  anjos-bolos-email-app:
+    image: amazoncorretto:21  # ← Mudança aqui
+    container_name: anjos-bolos-email-app
+    ports:
+      - "8081:8081"  # ← Verificar se está correto
+    volumes:
+      - /usr/share/api-email:/app
+      - /home/ubuntu/.env-email:/app/.env
+    working_dir: /app
+    command: java -jar email_service.jar
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - rabbitmq-email
+    networks:
+      - email-network
+    restart: unless-stopped
+
+  rabbitmq-email:
+    image: 'rabbitmq:3.13-management'
+    container_name: anjos-bolos-rabbitmq-email
+    environment:
+      - 'RABBITMQ_DEFAULT_PASS=secret'
+      - 'RABBITMQ_DEFAULT_USER=myuser'
+    ports:
+      - '5673:5672'
+      - '15673:15672'
+    volumes:
+      - rabbitmq_email_data:/var/lib/rabbitmq
+    networks:
+      - email-network
+    restart: unless-stopped
+
+volumes:
+  rabbitmq_email_data:
+
+networks:
+  email-network:
+    driver: bridge

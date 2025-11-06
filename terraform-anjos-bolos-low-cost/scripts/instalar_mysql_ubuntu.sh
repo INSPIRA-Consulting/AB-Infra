@@ -38,14 +38,8 @@ echo "==================================="
 # Espera o MySQL estar pronto
 sleep 5
 
-# Executa o script create_user.sql
-if [ -f /tmp/create_user.sql ]; then
-    echo "Executando create_user.sql..."
-    sudo mysql -u root -proot123 < /tmp/create_user.sql
-    echo "create_user.sql executado com sucesso!"
-else
-    echo "AVISO: Arquivo create_user.sql não encontrado!"
-fi
+# Scripts SQL já copiados via provisioner para /tmp
+echo "Scripts SQL disponíveis em /tmp/init.sql e /tmp/create_user.sql"
 
 # Executa o script init.sql
 if [ -f /tmp/init.sql ]; then
@@ -53,7 +47,18 @@ if [ -f /tmp/init.sql ]; then
     sudo mysql -u root -proot123 < /tmp/init.sql
     echo "init.sql executado com sucesso!"
 else
-    echo "AVISO: Arquivo init.sql não encontrado!"
+    echo "ERRO: Arquivo init.sql não encontrado!"
+    exit 1
+fi
+
+# Executa o script create_user.sql
+if [ -f /tmp/create_user.sql ]; then
+    echo "Executando create_user.sql..."
+    sudo mysql -u root -proot123 < /tmp/create_user.sql
+    echo "create_user.sql executado com sucesso!"
+else
+    echo "ERRO: Arquivo create_user.sql não encontrado!"
+    exit 1
 fi
 
 # Remove os arquivos temporários
@@ -85,6 +90,24 @@ if [ -f /home/ubuntu/compose.yaml ]; then
 else
     echo "AVISO: Arquivo compose.yaml não encontrado!"
     echo "A API não foi iniciada."
+fi
+
+echo "==================================="
+echo "Iniciando RabbitMQ via Docker Compose"
+echo "==================================="
+
+# Verifica se o arquivo compose-rabbit.yaml existe
+if [ -f /home/ubuntu/compose-rabbit.yaml ]; then
+    echo "Arquivo compose-rabbit.yaml encontrado, iniciando RabbitMQ..."
+    cd /home/ubuntu && sudo docker compose -f compose-rabbit.yaml up -d
+    echo "RabbitMQ iniciado com sucesso!"
+    
+    # Verifica os containers rodando
+    echo "Containers Docker ativos:"
+    sudo docker ps
+else
+    echo "AVISO: Arquivo compose-rabbit.yaml não encontrado!"
+    echo "RabbitMQ não foi iniciado."
 fi
 
 echo "==================================="

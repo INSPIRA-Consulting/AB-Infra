@@ -153,10 +153,26 @@ resource "aws_security_group" "sg_back_end_priv" {
   }
 
   ingress {
-    from_port   = 8081
-    to_port     = 8081
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
-    self        = true
+    cidr_blocks = ["10.25.0.0/26"]
+  }
+
+  ingress {
+    from_port   = 5672
+    to_port     = 5672
+    protocol    = "tcp"
+    cidr_blocks = ["10.25.0.0/26"]
+    description = "RabbitMQ AMQP"
+  }
+
+  ingress {
+    from_port   = 15672
+    to_port     = 15672
+    protocol    = "tcp"
+    cidr_blocks = ["10.25.0.0/26"]
+    description = "RabbitMQ Management UI"
   }
 
   egress {
@@ -164,6 +180,22 @@ resource "aws_security_group" "sg_back_end_priv" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.25.0.0/26"]
+  }
+
+  egress {
+    from_port   = 587
+    to_port     = 587
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SMTP com STARTTLS para envio de emails"
+  }
+
+  egress {
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SMTP com SSL/TLS para envio de emails"
   }
 
   egress {
