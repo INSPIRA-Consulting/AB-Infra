@@ -1,9 +1,9 @@
 services:
   anjos-bolos-email-app:
-    image: amazoncorretto:21  # ← Mudança aqui
+    image: amazoncorretto:21
     container_name: anjos-bolos-email-app
     ports:
-      - "8081:8081"  # ← Verificar se está correto
+      - "8081:8081"
     volumes:
       - /usr/share/api-email:/app
       - /home/ubuntu/.env-email:/app/.env

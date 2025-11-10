@@ -22,8 +22,8 @@ resource "aws_instance" "frontend_1a" {
 
   user_data = join("\n\n", [
     "#!/bin/bash",
-    file("${path.module}/../../scripts/instalar_docker_ubuntu.sh"),
-    file("${path.module}/../../scripts/instalar_nginx.sh")
+    file("${path.module}/../../scripts/install_scripts/instalar_docker_ubuntu.sh"),
+    file("${path.module}/../../scripts/install_scripts/instalar_nginx.sh")
   ])
 
   user_data_replace_on_change = true
@@ -41,7 +41,7 @@ resource "aws_instance" "frontend_1a" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/compose-nginx.yaml"
+    source      = "${path.module}/../../scripts/docker/compose-nginx.yaml"
     destination = "/home/ubuntu/compose.yaml"
   }
 
@@ -52,18 +52,28 @@ resource "aws_instance" "frontend_1a" {
       "sudo chown ubuntu:ubuntu /home/ubuntu/anjos-bolos-low-cost-key.pem",
       "echo 'Aguardando cloud-init terminar...'",
       "sudo cloud-init status --wait || echo 'Timeout cloud-init'",
-      "echo 'Frontend configurado. NGINX será iniciado após backend estar pronto.'"
+      "echo 'Frontend configurado. NGINX será iniciado via Docker Compose.'",
+      "echo 'Iniciando NGINX via Docker Compose...'",
+      "cd /home/ubuntu && sudo docker compose -f compose.yaml up -d",
+      "echo 'Aguardando NGINX iniciar...'",
+      "sleep 10",
+      "echo 'Verificando containers...'",
+      "sudo docker ps",
+      "echo 'Testando NGINX localmente...'",
+      "curl -I http://localhost:80 || echo 'NGINX ainda não respondeu'",
+      "echo 'NGINX Docker iniciado com sucesso!'"
     ]
   }
 }
 
-# Configura NGINX após ambas instâncias estarem prontas
-resource "null_resource" "configure_nginx" {
+# Configuração específica do proxy reverso após ambas instâncias estarem prontas
+resource "terraform_data" "configure_nginx_proxy" {
   depends_on = [aws_instance.frontend_1a, aws_instance.backend_1a]
 
-  triggers = {
+  triggers_replace = {
     frontend_id = aws_instance.frontend_1a.id
     backend_id  = aws_instance.backend_1a.id
+    backend_ip  = aws_instance.backend_1a.private_ip
   }
 
   connection {
@@ -75,21 +85,22 @@ resource "null_resource" "configure_nginx" {
 
   provisioner "remote-exec" {
     inline = [
-      "echo 'Configurando IP do backend para proxy reverso...'",
-      "sed -i 's/PLACEHOLDER_IP_API/${aws_instance.backend_1a.private_ip}:8080/g' /home/ubuntu/nginx-config/default.conf",
+      "echo 'Configurando proxy reverso para backend ${aws_instance.backend_1a.private_ip}:8080'",
+      "echo 'Aguardando backend estar disponível...'",
+      "timeout 300 bash -c 'until nc -z ${aws_instance.backend_1a.private_ip} 8080; do echo \"Aguardando backend...\"; sleep 10; done' || echo 'Timeout aguardando backend'",
+      "echo 'Backend disponível, atualizando configuração do NGINX...'",
+      "sudo docker stop frontend_nginx || echo 'Container não estava rodando'",
+      "sed -i 's/\\$\\{IP_PORTA_API\\}/${aws_instance.backend_1a.private_ip}:8080/g' /home/ubuntu/nginx-config/default.conf",
       "echo 'IP do backend configurado: ${aws_instance.backend_1a.private_ip}:8080'",
-      "cat /home/ubuntu/nginx-config/default.conf",
-      "echo 'Verificando se porta 80 está livre...'",
-      "sudo lsof -i :80 || echo 'Porta 80 está livre'",
-      "echo 'Iniciando NGINX via Docker Compose...'",
+      "cat /home/ubuntu/nginx-config/default.conf | grep -A 5 -B 5 proxy_pass",
+      "echo 'Reiniciando NGINX com configuração atualizada...'",
       "cd /home/ubuntu && sudo docker compose -f compose.yaml up -d",
-      "echo 'Aguardando NGINX iniciar...'",
       "sleep 5",
-      "echo 'Verificando containers...'",
+      "echo 'Verificando containers após reconfiguração...'",
       "sudo docker ps",
-      "echo 'Testando NGINX localmente...'",
-      "curl -I http://localhost:80 || echo 'NGINX ainda não respondeu'",
-      "echo 'NGINX Docker iniciado com sucesso!'"
+      "echo 'Testando proxy reverso...'",
+      "curl -I http://localhost:80/api/ || echo 'Proxy reverso ainda não respondeu'",
+      "echo 'NGINX configurado com sucesso para backend ${aws_instance.backend_1a.private_ip}:8080'"
     ]
   }
 }

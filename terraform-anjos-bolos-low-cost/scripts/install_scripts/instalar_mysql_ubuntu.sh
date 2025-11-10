@@ -93,7 +93,7 @@ else
 fi
 
 echo "==================================="
-echo "Iniciando RabbitMQ via Docker Compose"
+teecho "Iniciando RabbitMQ via Docker Compose"
 echo "==================================="
 
 # Verifica se o arquivo compose-rabbit.yaml existe

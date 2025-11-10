@@ -50,6 +50,7 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["10.25.0.0/26"]
   }
 
+  # Egress para rede local
   egress {
     from_port   = 0
     to_port     = 0
@@ -57,6 +58,7 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["10.25.0.0/26"]
   }
 
+  # Egress para internet - HTTP
   egress {
     from_port   = 80
     to_port     = 80
@@ -64,6 +66,7 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress para internet - HTTPS
   egress {
     from_port   = 443
     to_port     = 443
@@ -71,6 +74,25 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress para SMTP - Gmail porta 587
+  egress {
+    from_port   = 587
+    to_port     = 587
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SMTP Gmail"
+  }
+
+  # Egress para SMTP SSL - porta 465
+  egress {
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "SMTP SSL"
+  }
+
+  # Egress para DNS - TCP
   egress {
     from_port   = 53
     to_port     = 53
@@ -78,6 +100,7 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress para DNS - UDP
   egress {
     from_port   = 53
     to_port     = 53
@@ -85,6 +108,7 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress para NTP
   egress {
     from_port   = 123
     to_port     = 123
@@ -146,6 +170,14 @@ resource "aws_security_group" "sg_back_end_priv" {
   }
 
   ingress {
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["10.25.0.0/26"]
+    description = "Email Service API"
+  }
+
+  ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
@@ -175,11 +207,14 @@ resource "aws_security_group" "sg_back_end_priv" {
     description = "RabbitMQ Management UI"
   }
 
+  # Removido o egress geral para rede local que estava bloqueando
+  # Egress para comunicação interna na VPC
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["10.25.0.0/26"]
+    description = "Trafego interno VPC"
   }
 
   egress {

@@ -128,6 +128,29 @@ resource "aws_network_acl_rule" "private_out_ntp" {
   egress         = true
 }
 
+resource "aws_network_acl_rule" "private_out_smtp_starttls" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 160
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 587
+  to_port        = 587
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "private_out_smtp_ssl" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 170
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 465
+  to_port        = 465
+  egress         = true
+}
+
+
 # -------------------------------------------------------------------
 # Associação da ACL à Subnet Privada
 # -------------------------------------------------------------------

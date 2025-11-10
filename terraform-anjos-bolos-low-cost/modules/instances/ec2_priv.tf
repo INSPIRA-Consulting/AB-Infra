@@ -43,42 +43,42 @@ resource "aws_instance" "backend_1a" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/instalar_docker_ubuntu.sh"
+    source      = "${path.module}/../../scripts/install_scripts/instalar_docker_ubuntu.sh"
     destination = "/tmp/instalar_docker_ubuntu.sh"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/instalar_java.sh"
+    source      = "${path.module}/../../scripts/install_scripts/instalar_java.sh"
     destination = "/tmp/instalar_java.sh"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/instalar_mysql_ubuntu.sh"
+    source      = "${path.module}/../../scripts/install_scripts/instalar_mysql_ubuntu.sh"
     destination = "/tmp/instalar_mysql_ubuntu.sh"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/instalar_rabbitmq.sh"
+    source      = "${path.module}/../../scripts/install_scripts/instalar_rabbitmq.sh"
     destination = "/tmp/instalar_rabbitmq.sh"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/compose-api.yaml"
+    source      = "${path.module}/../../scripts/docker/compose-api.yaml"
     destination = "/tmp/compose-api.yaml"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/compose-rabbit.yaml"
+    source      = "${path.module}/../../scripts/docker/compose-rabbit.yaml"
     destination = "/tmp/compose-rabbit.yaml"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/init.sql"
+    source      = "${path.module}/../../scripts/sql/init.sql"
     destination = "/tmp/init.sql"
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/create_user.sql"
+    source      = "${path.module}/../../scripts/sql/create_user.sql"
     destination = "/tmp/create_user.sql"
   }
 
@@ -88,7 +88,7 @@ resource "aws_instance" "backend_1a" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/configurar_backup.sh"
+    source      = "${path.module}/../../scripts/backup/configurar_backup.sh"
     destination = "/tmp/configurar_backup.sh"
   }
 
