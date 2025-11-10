@@ -1,3 +1,0 @@
-[submodule "terraform-anjos-bolos-low-cost/scripts/ab-backend"]
-	path = terraform-anjos-bolos-low-cost/scripts/ab-backend
-	url = https://github.com/INSPIRA-Consulting/AB-Back-end.git
