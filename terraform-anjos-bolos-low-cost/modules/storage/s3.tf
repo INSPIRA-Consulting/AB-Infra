@@ -93,11 +93,11 @@ resource "aws_s3_object" "vendas_confeitaria_csv" {
 # Upload das imagens de bolos para o bucket de imagens
 resource "aws_s3_object" "bolo_de_cenoura" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_de_cenoura.png"
-  source = "${path.module}/images/bolo_de_cenoura.png"
+  key    = "bolo_de_cenoura.jpg"
+  source = "${path.module}/images/bolo_de_cenoura.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_de_cenoura.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_de_cenoura.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Cenoura"
@@ -108,11 +108,11 @@ resource "aws_s3_object" "bolo_de_cenoura" {
 
 resource "aws_s3_object" "bolo_de_chocolate" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_de_chocolate.png"
-  source = "${path.module}/images/bolo_de_chocolate.png"
+  key    = "bolo_de_chocolate.jpg"
+  source = "${path.module}/images/bolo_de_chocolate.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_de_chocolate.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_de_chocolate.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Chocolate"
@@ -123,11 +123,11 @@ resource "aws_s3_object" "bolo_de_chocolate" {
 
 resource "aws_s3_object" "bolo_de_coco" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_de_coco.png"
-  source = "${path.module}/images/bolo_de_coco.png"
+  key    = "bolo_de_coco.jpg"
+  source = "${path.module}/images/bolo_de_coco.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_de_coco.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_de_coco.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Coco"
@@ -138,11 +138,11 @@ resource "aws_s3_object" "bolo_de_coco" {
 
 resource "aws_s3_object" "bolo_de_fuba" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo-de-fuba.png"
-  source = "${path.module}/images/bolo-de-fuba.png"
+  key    = "bolo-de-fuba.jpg"
+  source = "${path.module}/images/bolo-de-fuba.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo-de-fuba.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo-de-fuba.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Fubá"
@@ -153,11 +153,11 @@ resource "aws_s3_object" "bolo_de_fuba" {
 
 resource "aws_s3_object" "bolo_de_laranja" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_de_laranja.png"
-  source = "${path.module}/images/bolo_de_laranja.png"
+  key    = "bolo_de_laranja.jpg"
+  source = "${path.module}/images/bolo_de_laranja.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_de_laranja.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_de_laranja.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Laranja"
@@ -168,11 +168,11 @@ resource "aws_s3_object" "bolo_de_laranja" {
 
 resource "aws_s3_object" "bolo_de_limao" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_de_limao.png"
-  source = "${path.module}/images/bolo_de_limao.png"
+  key    = "bolo_de_limao.jpg"
+  source = "${path.module}/images/bolo_de_limao.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_de_limao.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_de_limao.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Limão"
@@ -183,11 +183,11 @@ resource "aws_s3_object" "bolo_de_limao" {
 
 resource "aws_s3_object" "bolo_ninho_com_morango" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_ninho_com_morango.png"
-  source = "${path.module}/images/bolo_ninho_com_morango.png"
+  key    = "bolo_ninho_com_morango.jpg"
+  source = "${path.module}/images/bolo_ninho_com_morango.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_ninho_com_morango.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_ninho_com_morango.jpg")
   
   tags = {
     Name        = "Imagem Bolo Ninho com Morango"
@@ -198,11 +198,11 @@ resource "aws_s3_object" "bolo_ninho_com_morango" {
 
 resource "aws_s3_object" "bolo_prestigio" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_prestigio.png"
-  source = "${path.module}/images/bolo_prestigio.png"
+  key    = "bolo_prestigio.jpg"
+  source = "${path.module}/images/bolo_prestigio.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_prestigio.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_prestigio.jpg")
   
   tags = {
     Name        = "Imagem Bolo Prestígio"
@@ -213,11 +213,11 @@ resource "aws_s3_object" "bolo_prestigio" {
 
 resource "aws_s3_object" "bolo_red_velvet" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo_red_velvet.png"
-  source = "${path.module}/images/bolo_red_velvet.png"
+  key    = "bolo_red_velvet.jpg"
+  source = "${path.module}/images/bolo_red_velvet.jpg"
   
-  content_type = "image/png"
-  etag         = filemd5("${path.module}/images/bolo_red_velvet.png")
+  content_type = "image/jpg"
+  etag         = filemd5("${path.module}/images/bolo_red_velvet.jpg")
   
   tags = {
     Name        = "Imagem Bolo Red Velvet"

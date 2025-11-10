@@ -66,7 +66,7 @@ def baixar_feriados_brasileiros():
                 
                 df_limpo = df[colunas_padrao].fillna('')
                 csv_content = df_limpo.to_csv(index=False)
-                nome_arquivo = f"feriados-raw/{categoria}_{ano}.csv"
+                nome_arquivo = f"feriados/{categoria}_{ano}.csv"
                 
                 s3.put_object(
                     Bucket=bucket_name,
