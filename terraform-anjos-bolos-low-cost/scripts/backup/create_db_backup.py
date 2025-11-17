@@ -11,10 +11,17 @@ from pathlib import Path
 
 try:
     import boto3
-    import pika
-except Exception:
-    print("Dependências ausentes. Instale: pip install boto3 pika", file=sys.stderr)
+except ImportError:
+    print("boto3 não encontrado. Instalado via: sudo apt install python3-boto3", file=sys.stderr)
     sys.exit(1)
+
+# pika é opcional - só para RabbitMQ
+try:
+    import pika
+    PIKA_AVAILABLE = True
+except ImportError:
+    PIKA_AVAILABLE = False
+    print("pika não disponível. RabbitMQ notifications desabilitadas.", file=sys.stderr)
 
 
 def load_env(path):
@@ -80,6 +87,10 @@ def upload_s3(local_path, bucket, key, region=None):
 
 
 def send_rabbitmq(cfg, message):
+    if not PIKA_AVAILABLE:
+        logging.warning("pika não disponível - pulando notificação RabbitMQ")
+        return
+    
     exchange = cfg.get("RABBITMQ_EXCHANGE", "backup.fanout.exchange")
     user = cfg.get("RABBITMQ_USER", "guest")
     password = cfg.get("RABBITMQ_PASSWORD", "guest")
@@ -171,7 +182,10 @@ def main():
         send_rabbitmq(cfg, message)
         logging.info("Mensagem enviada ao RabbitMQ: %s", message)
     except Exception as e:
-        logging.exception("Falha ao enviar mensagem ao RabbitMQ: %s", e)
+        if PIKA_AVAILABLE:
+            logging.exception("Falha ao enviar mensagem ao RabbitMQ: %s", e)
+        else:
+            logging.info("RabbitMQ notification pulado (pika não disponível)")
 
     return 0 if status == "Realizado com Sucesso" else 1
 

@@ -204,7 +204,7 @@ def salvar_no_s3(df, nome_arquivo, bucket_name):
         csv_data = df.to_csv(index=False, encoding='utf-8')
         
         # Definir chave S3
-        arquivo_s3 = f"ipca-raw/{nome_arquivo}"
+        arquivo_s3 = f"ipca/{nome_arquivo}"
         
         # Upload para S3
         s3.put_object(
@@ -267,9 +267,9 @@ def processar_ipca_completo(bucket_name=None):
     try:
         # Usar /tmp/ no Lambda, diretório local em execução normal
         if usar_s3:
-            temp_dir = "/tmp/ipca-raw"
+            temp_dir = "/tmp/ipca"
         else:
-            temp_dir = "ipca-raw"
+            temp_dir = "ipca"
         
         os.makedirs(temp_dir, exist_ok=True)
         

@@ -246,12 +246,6 @@ INSERT INTO Produto (nome, precoFinal, custoProducao, fkCategoriaProduto) VALUES
 ('Suco Natural Maracujá', 8.00, 2.80, 2),
 ('Chocolate Quente', 10.00, 4.00, 2);
 
--- Produto placeholder para bolo de festa personalizado
-INSERT INTO Produto (id, nome, precoFinal, custoProducao, fkCategoriaProduto)
-VALUES 
-(99, 'Bolo de Festa Personalizado', 0.00, 0.00, 1);
-
-
 -- =======================
 -- Tipos de Receita
 -- =======================
@@ -344,9 +338,9 @@ INSERT INTO Pedido (dataPedido, dataRetirada, dataPagamento, formaPagamento, sta
 -- Itens do Pedido
 -- =======================
 INSERT INTO Item_Pedido (fkPedido, fkProduto, quantidade, valorFinal, custoProducao, peso) VALUES
-(1, 1, 1, 50.00, 30.00, 1),
-(1, 14, 5, 60.00, 32.50, 1),
-(2, 7, 1, 70.00, 40.00, 1),
-(3, 16, 1, 7.00, 3.50, 1),
-(4, 10, 5, 50.00, 27.50, 1),
-(5, 18, 2, 14.00, 7.00, 1);
+(1, 1, 1, 50.00, 30.00, 1.2),
+(1, 14, 5, 10.00, 5.00, 1.5),
+(2, 7, 1, 120.00, 70.00, 3.0),
+(3, 16, 1, 70.00, 40.00, 1.2),
+(4, 10, 10, 7.00, 3.50, 1.5),
+(5, 18, 2, 65.00, 39.00, 2.4);

@@ -37,10 +37,10 @@ def baixar_feriados_brasileiros():
         raise ValueError("Variável de ambiente S3_BUCKET_NAME não encontrada")
     
     categorias = {
-        'nacional': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/nacional/csv/',
-        'estadual': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/estadual/csv/',
-        'municipal': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/municipal/csv/',
-        'facultativo': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/facultativo/csv/'
+        'nacionais': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/nacional/json/',
+        'estaduais': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/estadual/json/',
+        'municipais': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/municipal/json/',
+        'facultativos': 'https://github.com/joaopbini/feriados-brasil/raw/master/dados/feriados/facultativo/json/'
     }
     
     anos = ['2024', '2025']
@@ -55,24 +55,24 @@ def baixar_feriados_brasileiros():
     for categoria, url_base in categorias.items():
         for ano in anos:
             try:
-                url = f'{url_base}{ano}.csv'
+                url = f'{url_base}{ano}.json'
                 logger.info(f"Baixando feriados {categoria} de {ano}...")
                 
-                df = pd.read_csv(url)
+                df = pd.read_json(url)
                 
                 for coluna in colunas_padrao:
                     if coluna not in df.columns:
                         df[coluna] = ''
                 
                 df_limpo = df[colunas_padrao].fillna('')
-                csv_content = df_limpo.to_csv(index=False)
-                nome_arquivo = f"feriados/{categoria}_{ano}.csv"
+                json_content = df_limpo.to_json(orient='records', force_ascii=False, indent=2)
+                nome_arquivo = f"feriados/{categoria}/{ano}.json"
                 
                 s3.put_object(
                     Bucket=bucket_name,
                     Key=nome_arquivo,
-                    Body=csv_content,
-                    ContentType='text/csv'
+                    Body=json_content,
+                    ContentType='application/json'
                 )
                 
                 sucessos += 1

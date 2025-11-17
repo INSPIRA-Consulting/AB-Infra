@@ -1,4 +1,6 @@
-# Configuração das Instâncias EC2 Back-End
+# =============================================================================
+# CONFIGURAÇÃO DAS INSTÂNCIAS EC2 BACKEND PRIVADAS - Modelo Simplificado
+# =============================================================================
 
 resource "aws_instance" "backend_1a" {
   ami           = var.ami_id
@@ -8,7 +10,7 @@ resource "aws_instance" "backend_1a" {
 
   key_name = var.key_pair_name
   
-  # Usando LabRole via data source (mesma abordagem das Lambdas)
+  # Usando LabInstanceProfile (referência direta)
   iam_instance_profile = "LabInstanceProfile"
 
   ebs_block_device {
@@ -23,12 +25,8 @@ resource "aws_instance" "backend_1a" {
 
   subnet_id = var.private_subnet_1a_id
 
-  user_data = <<-EOF
-    #!/bin/bash
-    echo "Instância backend iniciada, aguardando provisioners..."
-    # Instalar cloud-init status check
-    cloud-init status --wait || echo "Cloud-init concluído"
-    EOF
+  # User data otimizado para o novo modelo
+  user_data = base64encode(templatefile("${path.module}/../../scripts/setup-backend.sh", {}))
 
   user_data_replace_on_change = true
 
@@ -43,33 +41,13 @@ resource "aws_instance" "backend_1a" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/install_scripts/instalar_docker_ubuntu.sh"
-    destination = "/tmp/instalar_docker_ubuntu.sh"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../scripts/install_scripts/instalar_java.sh"
-    destination = "/tmp/instalar_java.sh"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../scripts/install_scripts/instalar_mysql_ubuntu.sh"
-    destination = "/tmp/instalar_mysql_ubuntu.sh"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/../../scripts/install_scripts/instalar_rabbitmq.sh"
-    destination = "/tmp/instalar_rabbitmq.sh"
-  }
-
-  provisioner "file" {
     source      = "${path.module}/../../scripts/docker/compose-api.yaml"
-    destination = "/tmp/compose-api.yaml"
+    destination = "/home/ubuntu/compose-api.yaml"
   }
 
   provisioner "file" {
     source      = "${path.module}/../../scripts/docker/compose-rabbit.yaml"
-    destination = "/tmp/compose-rabbit.yaml"
+    destination = "/home/ubuntu/compose-rabbit.yaml"
   }
 
   provisioner "file" {
@@ -84,26 +62,26 @@ resource "aws_instance" "backend_1a" {
 
   provisioner "file" {
     source      = "${path.module}/../../scripts/backup/create_db_backup.py"
-    destination = "/tmp/create_db_backup.py"
+    destination = "/home/ubuntu/create_db_backup.py"
   }
 
-  provisioner "file" {
-    source      = "${path.module}/../../scripts/backup/configurar_backup.sh"
-    destination = "/tmp/configurar_backup.sh"
-  }
-
+  # Provisioner simplificado - aguarda setup e configura
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/instalar_docker_ubuntu.sh",
-      "chmod +x /tmp/instalar_java.sh", 
-      "chmod +x /tmp/instalar_mysql_ubuntu.sh",
-      "chmod +x /tmp/instalar_rabbitmq.sh",
-      "chmod +x /tmp/configurar_backup.sh",
-      "sudo /tmp/instalar_docker_ubuntu.sh",
-      "sudo /tmp/instalar_java.sh",
-      "sudo /tmp/instalar_mysql_ubuntu.sh", 
-      "sudo /tmp/instalar_rabbitmq.sh",
-      "sudo /tmp/configurar_backup.sh"
+      "chmod +x /home/ubuntu/*.yaml",
+      "chown ubuntu:ubuntu /home/ubuntu/*.yaml /home/ubuntu/create_db_backup.py",
+      "echo 'Aguardando backend setup OTIMIZADO terminar...'",
+      "timeout 300 bash -c 'while ! grep -q \"Backend OTIMIZADO configurado com sucesso!\" /var/log/backend-setup.log 2>/dev/null; do echo \"Aguardando...\"; sleep 10; done'",
+      "sleep 3",
+      "echo 'Configurando banco de dados...'", 
+      "mysql -u root -proot123 < /tmp/init.sql",
+      "mysql -u root -proot123 < /tmp/create_user.sql",
+      "echo 'Iniciando serviços Docker...'",
+      "cd /home/ubuntu && sudo -u ubuntu docker compose -f compose-api.yaml up -d",
+      "sleep 5",
+      "cd /home/ubuntu && sudo -u ubuntu docker compose -f compose-rabbit.yaml up -d",
+      "echo 'Backend COMPLETO configurado com sucesso!'",
+      "rm -f /tmp/*.sql"
     ]
   }
 }

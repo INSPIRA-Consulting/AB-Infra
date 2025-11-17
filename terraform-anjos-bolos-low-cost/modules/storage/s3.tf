@@ -1,6 +1,6 @@
 # Bucket principal para dados (usado pela Lambda)
 resource "aws_s3_bucket" "s3_raw_data" {
-  bucket        = "s3-raw-anjos-bolos-data"
+  bucket        = "s3-raw-anjos-bolos"
   force_destroy = true 
 }
 
@@ -138,11 +138,11 @@ resource "aws_s3_object" "bolo_de_coco" {
 
 resource "aws_s3_object" "bolo_de_fuba" {
   bucket = aws_s3_bucket.s3_raw_images.id
-  key    = "bolo-de-fuba.jpg"
-  source = "${path.module}/images/bolo-de-fuba.jpg"
+  key    = "bolo_de_fuba.jpg"
+  source = "${path.module}/images/bolo_de_fuba.jpg"
   
   content_type = "image/jpg"
-  etag         = filemd5("${path.module}/images/bolo-de-fuba.jpg")
+  etag         = filemd5("${path.module}/images/bolo_de_fuba.jpg")
   
   tags = {
     Name        = "Imagem Bolo de Fubá"
