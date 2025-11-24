@@ -5,8 +5,8 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - /usr/share/api-email:/app
-      - /home/ubuntu/.env-email:/app/.env
+      - /usr/share/api-email:/app               # diretório com o JAR
+      - /usr/share/api-email/.env:/app/.env     # mesmo .env que o CI/CD grava
     working_dir: /app
     command: java -jar email_service.jar
     environment:
@@ -18,14 +18,14 @@ services:
     restart: unless-stopped
 
   rabbitmq-email:
-    image: 'rabbitmq:3.13-management'
+    image: rabbitmq:3.13-management
     container_name: anjos-bolos-rabbitmq-email
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      - RABBITMQ_DEFAULT_PASS=secret
+      - RABBITMQ_DEFAULT_USER=myuser
     ports:
-      - '5673:5672'
-      - '15673:15672'
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_email_data:/var/lib/rabbitmq
     networks:

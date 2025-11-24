@@ -83,11 +83,6 @@ resource "aws_s3_object" "vendas_confeitaria_csv" {
   content_type = "text/csv"
   etag         = filemd5("${path.module}/data/vendas_confeitaria.csv")
   
-  tags = {
-    Name        = "Dados de Vendas da Confeitaria"
-    Environment = "low-cost"
-    Type        = "data"
-  }
 }
 
 # Upload das imagens de bolos para o bucket de imagens

@@ -1,160 +1,77 @@
-# -------------------------------------------------------------------
-# Network ACL Privada
-# -------------------------------------------------------------------
-resource "aws_network_acl" "private" {
-  vpc_id = var.vpc_id
-  tags   = { Name = "acl-priv-anjos-bolos" }
-}
+# resource "aws_network_acl" "private" {
+#   vpc_id     = var.vpc_id
+#   subnet_ids = [var.private_subnet_id]
+#   tags       = { Name = "acl-priv-anjos-bolos" }
 
-# -------------------------------------------------------------------
-# Regras de Entrada (Inbound)
-# -------------------------------------------------------------------
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 100
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 22
+#     to_port    = 22
+#   }
 
-# -------------------------------------------------------------------
-# Regras de Entrada (Inbound)
-# -------------------------------------------------------------------
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 110
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 8080
+#     to_port    = 8080
+#   }
 
-resource "aws_network_acl_rule" "private_in_ssh" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 100
-  egress         = false
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "10.25.0.0/26"
-  from_port      = 22
-  to_port        = 22
-}
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 120
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 8081
+#     to_port    = 8081
+#   }
 
-resource "aws_network_acl_rule" "private_in_http" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 110
-  egress         = false
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "10.25.0.0/26"
-  from_port      = 80
-  to_port        = 80
-}
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 130
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 3306
+#     to_port    = 3306
+#   }
 
-resource "aws_network_acl_rule" "private_in_https" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 120
-  egress         = false
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "10.25.0.0/26"
-  from_port      = 443
-  to_port        = 443
-}
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 140
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 5672
+#     to_port    = 5672
+#   }
 
-resource "aws_network_acl_rule" "private_in_ephemeral" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 140
-  egress         = false
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 1024
-  to_port        = 65535
-}
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 150
+#     action     = "allow"
+#     cidr_block = "10.25.0.0/26"
+#     from_port  = 15672
+#     to_port    = 15672
+#   }
 
-# -------------------------------------------------------------------
-# Regras de Saída (Outbound)
-# -------------------------------------------------------------------
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 160
+#     action     = "allow"
+#     cidr_block = "0.0.0.0/0"
+#     from_port  = 0
+#     to_port    = 65535
+#   }
 
-resource "aws_network_acl_rule" "private_out_internal" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 100
-  protocol       = "-1"
-  rule_action    = "allow"
-  cidr_block     = "10.25.0.0/26"
-  from_port      = 0
-  to_port        = 0
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_http" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 110
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 80
-  to_port        = 80
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_https" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 120
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 443
-  to_port        = 443
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_dns_tcp" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 130
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 53
-  to_port        = 53
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_dns_udp" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 140
-  protocol       = "udp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 53
-  to_port        = 53
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_ntp" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 150
-  protocol       = "udp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 123
-  to_port        = 123
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_smtp_starttls" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 160
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 587
-  to_port        = 587
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "private_out_smtp_ssl" {
-  network_acl_id = aws_network_acl.private.id
-  rule_number    = 170
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
-  from_port      = 465
-  to_port        = 465
-  egress         = true
-}
-
-
-# -------------------------------------------------------------------
-# Associação da ACL à Subnet Privada
-# -------------------------------------------------------------------
-resource "aws_network_acl_association" "private_a" {
-  network_acl_id = aws_network_acl.private.id
-  subnet_id      = var.private_subnet_1a_id
-}
+#   egress {
+#     protocol   = "-1"
+#     rule_no    = 100
+#     action     = "allow"
+#     cidr_block = "0.0.0.0/0"
+#     from_port  = 0
+#     to_port    = 0
+#   }
+# }

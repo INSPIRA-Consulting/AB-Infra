@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/opt/python-env/bin/python3
 import os
 import sys
 import subprocess
@@ -6,6 +6,8 @@ import gzip
 import shutil
 import json
 import logging
+import smtplib
+from email.message import EmailMessage
 from datetime import datetime
 from pathlib import Path
 
@@ -15,7 +17,6 @@ except ImportError:
     print("boto3 não encontrado. Instalado via: sudo apt install python3-boto3", file=sys.stderr)
     sys.exit(1)
 
-# pika é opcional - só para RabbitMQ
 try:
     import pika
     PIKA_AVAILABLE = True
@@ -33,7 +34,6 @@ def load_env(path):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            # Aceitar linhas com ou sem 'export '
             if line.startswith("export "):
                 line = line[len("export "):].strip()
             if "=" in line:
@@ -80,28 +80,52 @@ def gzip_file(src_path):
     return gz_path
 
 
-def upload_s3(local_path, bucket, key, region=None):
-    s3 = boto3.client("s3", region_name=region) if region else boto3.client("s3")
+def upload_s3(local_path, bucket, key, region=None, endpoint=None):
+    client_args = {"region_name": region} if region else {}
+    if endpoint:
+        client_args["endpoint_url"] = endpoint
+    s3 = boto3.client("s3", **client_args)
     s3.upload_file(local_path, bucket, key)
     return f"s3://{bucket}/{key}"
+
+
+def send_email(cfg, subject, body):
+    to_addr = cfg.get("EMAIL_TO")
+    from_addr = cfg.get("EMAIL_FROM", f"backup@{os.uname().nodename}")
+    if not to_addr:
+        logging.info("EMAIL_TO não definido; pulando notificação por e-mail")
+        return
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = from_addr
+    msg["To"] = to_addr
+    msg.set_content(body)
+
+    host = cfg.get("SMTP_HOST", "localhost")
+    port = int(cfg.get("SMTP_PORT", 25))
+    try:
+        with smtplib.SMTP(host=host, port=port, timeout=30) as smtp:
+            smtp.send_message(msg)
+        logging.info("E-mail enviado para %s via %s:%s", to_addr, host, port)
+    except Exception as exc:
+        logging.exception("Falha ao enviar e-mail: %s", exc)
 
 
 def send_rabbitmq(cfg, message):
     if not PIKA_AVAILABLE:
         logging.warning("pika não disponível - pulando notificação RabbitMQ")
         return
-    
     exchange = cfg.get("RABBITMQ_EXCHANGE", "backup.fanout.exchange")
     user = cfg.get("RABBITMQ_USER", "guest")
     password = cfg.get("RABBITMQ_PASSWORD", "guest")
     host = cfg.get("RABBITMQ_HOST", "localhost")
-    port = int(cfg.get("RABBITMQ_PORT", 5672))
+    port = int(cfg.get("RABBITMQ_PORT", 5673))
 
     credentials = pika.PlainCredentials(user, password)
     params = pika.ConnectionParameters(host=host, port=port, credentials=credentials)
     conn = pika.BlockingConnection(params)
     ch = conn.channel()
-    # Garantir que o exchange existe; em fanout a routing_key é ignorada
     ch.exchange_declare(exchange=exchange, exchange_type="fanout", durable=True)
     ch.basic_publish(
         exchange=exchange,
@@ -125,8 +149,9 @@ def main():
 
     setup_logging(cfg["LOG_FILE"])
 
-    timestamp_human = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    timestamp_file = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now()
+    timestamp_human = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    timestamp_file = timestamp.strftime("%Y%m%d_%H%M%S")
     filename_base = f"backup_{cfg['DB_NAME']}_{timestamp_file}.sql"
     backup_dir = Path(cfg["BACKUP_DIR"])
     backup_dir.mkdir(parents=True, exist_ok=True)
@@ -147,13 +172,19 @@ def main():
         gz_path = gzip_file(local_sql_path)
         sent_filename = Path(gz_path).name
 
-        logging.info("Enviando para S3")
+        logging.info("Enviando para S3/endpoint privado")
         s3_key = f"backups/{sent_filename}"
-        s3_path = upload_s3(gz_path, cfg["S3_BUCKET"], s3_key, region=cfg.get("AWS_DEFAULT_REGION"))
+        s3_path = upload_s3(
+            gz_path,
+            cfg["S3_BUCKET"],
+            s3_key,
+            region=cfg.get("AWS_DEFAULT_REGION"),
+            endpoint=cfg.get("S3_ENDPOINT_URL"),
+        )
         status = "Realizado com Sucesso"
         logging.info("Upload concluído: %s", s3_path)
 
-        if cfg.get("REMOVE_LOCAL_AFTER_UPLOAD", "1") in ("1", "true", "True"):
+        if cfg.get("REMOVE_LOCAL_AFTER_UPLOAD", "1").lower() in ("1", "true"):
             try:
                 os.remove(gz_path)
                 logging.info("Arquivo local removido: %s", gz_path)
@@ -177,6 +208,9 @@ def main():
             "dataBackup": timestamp_human,
             "status": "Falha ao Realizar Backup",
         }
+
+    subject = f"[Backup] {cfg['DB_NAME']} - {status}"
+    send_email(cfg, subject, json.dumps(message, ensure_ascii=False, indent=2))
 
     try:
         send_rabbitmq(cfg, message)

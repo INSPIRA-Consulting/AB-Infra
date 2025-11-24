@@ -11,12 +11,12 @@ variable "vpc_name" {
 # -------------------------------------------------------------------------
 
 # Variáveis das Subnets ---------------------------------------------------
-variable "public_subnet_1a_cidr" {
+variable "public_subnet_cidr" {
   default     = "10.25.0.0/28"
   description = "Bloco CIDR para a subnet pública 1a"
 }
 
-variable "private_subnet_1a_cidr" {
+variable "private_subnet_cidr" {
   default     = "10.25.0.32/28"
   description = "Bloco CIDR para a subnet privada 1a"
 }

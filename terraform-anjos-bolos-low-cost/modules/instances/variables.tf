@@ -16,12 +16,12 @@ variable "instance_type_back" {
   default     = "t3.small"
 }
 
-variable "private_subnet_1a_id" {
+variable "private_subnet_id" {
   description = "ID da subnet privada na AZ 1a"
   type        = string
 }
 
-variable "public_subnet_1a_id" {
+variable "public_subnet_id" {
   description = "ID da subnet pública na AZ 1a"
   type        = string
 }

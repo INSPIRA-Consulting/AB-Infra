@@ -16,17 +16,36 @@ resource "aws_security_group" "sg_acesso_remoto_pub" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "sg_front_end_pub" {
+  description = "Permite TODAS as portas para as EC2s Publicas"
+  vpc_id      = var.vpc_id
+
   ingress {
-    from_port   = 5672
-    to_port     = 5672
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port   = 15672
-    to_port     = 15672
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol    = "icmp"
+    from_port   = -1
+    to_port     = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -47,141 +66,14 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.25.0.0/26"]
-  }
-
-  # Egress para rede local
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["10.25.0.0/26"]
-  }
-
-  # Egress para internet - HTTP
-  egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress para internet - HTTPS
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress para SMTP - Gmail porta 587
-  egress {
-    from_port   = 587
-    to_port     = 587
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTP Gmail"
-  }
-
-  # Egress para SMTP SSL - porta 465
-  egress {
-    from_port   = 465
-    to_port     = 465
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTP SSL"
-  }
-
-  # Egress para DNS - TCP
-  egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress para DNS - UDP
-  egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Egress para NTP
-  egress {
-    from_port   = 123
-    to_port     = 123
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-
-resource "aws_security_group" "sg_front_end_pub" {
-  description = "Permite acesso HTTP e HTTPS para as EC2 Publicas"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "sg_back_end_priv" {
-  description = "Permite acesso HTTP e HTTPS para as EC2s Privadas"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["10.25.0.0/26"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["10.25.0.0/26"]
-  }
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["10.25.0.0/26"]
-  }
-
-  ingress {
-    from_port   = 8081
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = ["10.25.0.0/26"]
-    description = "Email Service API"
   }
 
   ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    self        = true
+    cidr_blocks = ["10.25.0.0/26"]
   }
 
   ingress {
@@ -196,111 +88,73 @@ resource "aws_security_group" "sg_back_end_priv" {
     to_port     = 5672
     protocol    = "tcp"
     cidr_blocks = ["10.25.0.0/26"]
-    description = "RabbitMQ AMQP"
   }
 
   ingress {
-    from_port   = 15672
-    to_port     = 15672
+    from_port   = 5673
+    to_port     = 5673
     protocol    = "tcp"
     cidr_blocks = ["10.25.0.0/26"]
-    description = "RabbitMQ Management UI"
   }
 
-  # Removido o egress geral para rede local que estava bloqueando
-  # Egress para comunicação interna na VPC
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["10.25.0.0/26"]
-    description = "Trafego interno VPC"
-  }
-
-  egress {
-    from_port   = 587
-    to_port     = 587
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTP com STARTTLS para envio de emails"
-  }
-
-  egress {
-    from_port   = 465
-    to_port     = 465
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTP com SSL/TLS para envio de emails"
-  }
-
-  egress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 123
-    to_port     = 123
-    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
-# resource "aws_security_group" "rabbitmq_sg" {
-#   name        = "rabbitmq-sg"
-#   description = "Permite trafego para RabbitMQ"
+# resource "aws_security_group" "sg_back_end_priv" {
+#   description = "Acesso para Backend Privado"
 #   vpc_id      = var.vpc_id
- 
-#   # Regra para RabbitMQ AMQP (Porta 5672)
+
 #   ingress {
-#     description = "RabbitMQ AMQP"
+#     from_port   = 8080
+#     to_port     = 8080
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   ingress {
+#     from_port   = 8081
+#     to_port     = 8081
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+#   ingress {
+#     from_port   = 3306
+#     to_port     = 3306
+#     protocol    = "tcp"
+#     self        = true
+#   }
+
+#   ingress {
 #     from_port   = 5672
 #     to_port     = 5672
 #     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"] # TODO: Cuidado com isso em produção!
+#     cidr_blocks = ["0.0.0.0/0"]
 #   }
 
-#   # Regra para RabbitMQ Management UI (Porta 15672)
 #   ingress {
-#     description = "RabbitMQ UI"
 #     from_port   = 15672
 #     to_port     = 15672
 #     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"] # TODO: Cuidado com isso em produção!
+#     cidr_blocks = ["0.0.0.0/0"]
 #   }
 
-#   # Regra de Saída (Outbound) - Permite todo o tráfego de saída
+#   ingress {
+#     from_port   = 587
+#     to_port     = 587
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
 #   egress {
 #     from_port   = 0
 #     to_port     = 0
 #     protocol    = "-1"
 #     cidr_blocks = ["0.0.0.0/0"]
-#   }
-
-#   tags = {
-#     Name = "SG RabbitMQ"
 #   }
 # }

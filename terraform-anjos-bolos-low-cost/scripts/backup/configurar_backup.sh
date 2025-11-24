@@ -51,7 +51,7 @@ AWS_DEFAULT_REGION=us-east-1
 
 # Configurações RabbitMQ
 RABBITMQ_HOST=localhost
-RABBITMQ_PORT=5672
+RABBITMQ_PORT=5673
 RABBITMQ_USER=myuser
 RABBITMQ_PASSWORD=secret
 RABBITMQ_EXCHANGE=backup.fanout.exchange

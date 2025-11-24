@@ -66,8 +66,8 @@ module "security" {
   source = "./modules/security"
 
   vpc_id               = module.network.vpc_id
-  public_subnet_1a_id  = module.network.public_subnet_1a_id
-  private_subnet_1a_id = module.network.private_subnet_1a_id
+  public_subnet_id  = module.network.public_subnet_id
+  private_subnet_id = module.network.private_subnet_id
 }
 
 # Criamos as instâncias com as referências das subnets e security groups
@@ -75,8 +75,8 @@ module "instances" {
   source = "./modules/instances"
 
   # Subnets
-  private_subnet_1a_id = module.network.private_subnet_1a_id
-  public_subnet_1a_id  = module.network.public_subnet_1a_id
+  private_subnet_id = module.network.private_subnet_id
+  public_subnet_id  = module.network.public_subnet_id
 
   # Security Groups
   private_security_group_ids = module.security.sg_private_ids
@@ -107,7 +107,7 @@ module "github_actions" {
   source = "./modules/github_actions"
 
   access_key = tls_private_key.main_key.private_key_pem
-  private_ip_host = module.instances.private_ip_1a
-  public_ip_host = module.instances.public_ip_1a
+  private_ip_host = module.instances.private_ip
+  public_ip_host = module.instances.public_ip
 
 }

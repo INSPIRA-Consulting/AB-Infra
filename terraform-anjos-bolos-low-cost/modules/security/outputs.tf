@@ -1,32 +1,31 @@
-output "backend_security_group_id" {
-  description = "ID do Security Group para instâncias backend"
-  value       = aws_security_group.sg_back_end_priv.id
-}
+# output "backend_security_group_id" {
+#   description = "ID do Security Group para instâncias backend"
+#   value       = aws_security_group.sg_back_end_priv.id
+# }
 
-output "database_security_group_id" {
-  description = "ID do Security Group para instâncias de banco de dados"
-  value       = aws_security_group.sg_back_end_priv.id
-}
+# output "database_security_group_id" {
+#   description = "ID do Security Group para instâncias de banco de dados"
+#   value       = aws_security_group.sg_back_end_priv.id
+# }
 
-output "frontend_security_group_id" {
-  description = "ID do Security Group para instâncias frontend"
-  value       = aws_security_group.sg_front_end_pub.id
-}
+# output "frontend_security_group_id" {
+#   description = "ID do Security Group para instâncias frontend"
+#   value       = aws_security_group.sg_front_end_pub.id
+# }
 
-output "ssh_public_security_group_id" {
-  description = "ID do Security Group SSH público"
-  value       = aws_security_group.sg_acesso_remoto_pub.id
-}
+# output "ssh_public_security_group_id" {
+#   description = "ID do Security Group SSH público"
+#   value       = aws_security_group.sg_acesso_remoto_pub.id
+# }
 
-output "ssh_private_security_group_id" {
-  description = "ID do Security Group SSH privado"
-  value       = aws_security_group.sg_acesso_remoto_priv.id
-}
+# output "ssh_private_security_group_id" {
+#   description = "ID do Security Group SSH privado"
+#   value       = aws_security_group.sg_acesso_remoto_priv.id
+# }
 
-# Outputs para compatibilidade com main.tf
 output "sg_private_ids" {
   description = "IDs dos Security Groups privados"
-  value       = [aws_security_group.sg_back_end_priv.id, aws_security_group.sg_acesso_remoto_priv.id]
+  value       = [aws_security_group.sg_acesso_remoto_priv.id]
 }
 
 output "sg_public_ids" {
@@ -39,7 +38,7 @@ output "public_security_group_id" {
   value       = aws_security_group.sg_front_end_pub.id
 }
 
-output "private_security_group_id" {
-  description = "ID do Security Group privado principal"
-  value       = aws_security_group.sg_back_end_priv.id
-}
+# output "private_security_group_id" {
+#   description = "ID do Security Group privado principal"
+#   value       = aws_security_group.sg_back_end_priv.id
+# }
