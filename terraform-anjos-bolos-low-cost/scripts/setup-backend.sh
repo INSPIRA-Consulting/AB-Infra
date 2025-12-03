@@ -122,7 +122,7 @@ log "Configurando ambiente Python e instalando boto3..."
 # Criar ambiente virtual para evitar conflitos do sistema
 python3 -m venv /opt/python-env
 /opt/python-env/bin/pip install --upgrade pip
-/opt/python-env/bin/pip install boto3 configparser
+/opt/python-env/bin/pip install boto3 configparser pika
 
 # Criar link simbólico para facilitar uso
 ln -sf /opt/python-env/bin/python3 /usr/local/bin/python-env

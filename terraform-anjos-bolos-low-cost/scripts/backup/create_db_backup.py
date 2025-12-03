@@ -6,23 +6,15 @@ import gzip
 import shutil
 import json
 import logging
-import smtplib
-from email.message import EmailMessage
 from datetime import datetime
 from pathlib import Path
 
 try:
     import boto3
-except ImportError:
-    print("boto3 não encontrado. Instalado via: sudo apt install python3-boto3", file=sys.stderr)
-    sys.exit(1)
-
-try:
     import pika
-    PIKA_AVAILABLE = True
-except ImportError:
-    PIKA_AVAILABLE = False
-    print("pika não disponível. RabbitMQ notifications desabilitadas.", file=sys.stderr)
+except Exception:
+    print("Dependências ausentes. Instale: pip install boto3 pika", file=sys.stderr)
+    sys.exit(1)
 
 
 def load_env(path):
@@ -89,38 +81,12 @@ def upload_s3(local_path, bucket, key, region=None, endpoint=None):
     return f"s3://{bucket}/{key}"
 
 
-def send_email(cfg, subject, body):
-    to_addr = cfg.get("EMAIL_TO")
-    from_addr = cfg.get("EMAIL_FROM", f"backup@{os.uname().nodename}")
-    if not to_addr:
-        logging.info("EMAIL_TO não definido; pulando notificação por e-mail")
-        return
-
-    msg = EmailMessage()
-    msg["Subject"] = subject
-    msg["From"] = from_addr
-    msg["To"] = to_addr
-    msg.set_content(body)
-
-    host = cfg.get("SMTP_HOST", "localhost")
-    port = int(cfg.get("SMTP_PORT", 25))
-    try:
-        with smtplib.SMTP(host=host, port=port, timeout=30) as smtp:
-            smtp.send_message(msg)
-        logging.info("E-mail enviado para %s via %s:%s", to_addr, host, port)
-    except Exception as exc:
-        logging.exception("Falha ao enviar e-mail: %s", exc)
-
-
 def send_rabbitmq(cfg, message):
-    if not PIKA_AVAILABLE:
-        logging.warning("pika não disponível - pulando notificação RabbitMQ")
-        return
     exchange = cfg.get("RABBITMQ_EXCHANGE", "backup.fanout.exchange")
     user = cfg.get("RABBITMQ_USER", "guest")
     password = cfg.get("RABBITMQ_PASSWORD", "guest")
     host = cfg.get("RABBITMQ_HOST", "localhost")
-    port = int(cfg.get("RABBITMQ_PORT", 5673))
+    port = int(cfg.get("RABBITMQ_PORT", 5672))
 
     credentials = pika.PlainCredentials(user, password)
     params = pika.ConnectionParameters(host=host, port=port, credentials=credentials)
@@ -181,7 +147,7 @@ def main():
             region=cfg.get("AWS_DEFAULT_REGION"),
             endpoint=cfg.get("S3_ENDPOINT_URL"),
         )
-        status = "Realizado com Sucesso"
+        status = "Backup Realizado com Sucesso"
         logging.info("Upload concluído: %s", s3_path)
 
         if cfg.get("REMOVE_LOCAL_AFTER_UPLOAD", "1").lower() in ("1", "true"):
@@ -194,7 +160,7 @@ def main():
     except Exception as e:
         logging.exception("Erro no processo de backup: %s", e)
 
-    if status == "Realizado com Sucesso":
+    if status == "Backup Realizado com Sucesso":
         message = {
             "nomeArquivo": sent_filename,
             "caminhoArquivo": s3_path,
@@ -209,19 +175,13 @@ def main():
             "status": "Falha ao Realizar Backup",
         }
 
-    subject = f"[Backup] {cfg['DB_NAME']} - {status}"
-    send_email(cfg, subject, json.dumps(message, ensure_ascii=False, indent=2))
-
     try:
         send_rabbitmq(cfg, message)
         logging.info("Mensagem enviada ao RabbitMQ: %s", message)
     except Exception as e:
-        if PIKA_AVAILABLE:
-            logging.exception("Falha ao enviar mensagem ao RabbitMQ: %s", e)
-        else:
-            logging.info("RabbitMQ notification pulado (pika não disponível)")
+        logging.exception("Falha ao enviar mensagem ao RabbitMQ: %s", e)
 
-    return 0 if status == "Realizado com Sucesso" else 1
+    return 0 if status == "Backup Realizado com Sucesso" else 1
 
 
 if __name__ == "__main__":

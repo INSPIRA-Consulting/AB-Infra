@@ -44,7 +44,7 @@ def baixar_feriados_brasileiros():
     }
     
     anos = ['2024', '2025']
-    colunas_padrao = ['Data', 'Nome_Feriado', 'Tipo_Feriado', 'Descricao', 'Sigla_Estado', 'Municipio']
+    colunas_padrao = ['data', 'nome', 'tipo', 'descricao', 'uf', 'municipio']
     
     s3 = boto3.client('s3')
     sucessos = 0
@@ -65,7 +65,7 @@ def baixar_feriados_brasileiros():
                         df[coluna] = ''
                 
                 df_limpo = df[colunas_padrao].fillna('')
-                json_content = df_limpo.to_json(orient='records', force_ascii=False, indent=2)
+                json_content = df_limpo.to_json(orient='records', force_ascii=False, indent=2).replace("\\/", "/")
                 nome_arquivo = f"feriados/{categoria}/{ano}.json"
                 
                 s3.put_object(

@@ -84,6 +84,13 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
   }
 
   ingress {
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = ["10.25.0.0/26"]
+  }
+
+  ingress {
     from_port   = 5672
     to_port     = 5672
     protocol    = "tcp"

@@ -56,8 +56,8 @@ resource "aws_instance" "backend" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/../../scripts/sql/create_user.sql"
-    destination = "/tmp/create_user.sql"
+    source      = "${path.module}/../../scripts/sql/inserts.sql"
+    destination = "/tmp/inserts.sql"
   }
 
   provisioner "file" {
@@ -89,7 +89,7 @@ resource "aws_instance" "backend" {
       "export PATH=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin\"",
       "echo 'Configurando banco de dados...'", 
       "mysql -u root -proot123 < /tmp/init.sql",
-      "mysql -u root -proot123 < /tmp/create_user.sql",
+      "mysql -u root -proot123 < /tmp/inserts.sql",
       "echo 'Criando script para iniciar Docker...'",
       "cat > /tmp/start_docker.sh << 'EOF'",
       "#!/bin/bash",
