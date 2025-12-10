@@ -51,6 +51,11 @@ resource "aws_instance" "backend" {
   }
 
   provisioner "file" {
+    source      = "${path.module}/../../scripts/docker/compose-redis.yaml"
+    destination = "/home/ubuntu/compose-redis.yaml"
+  }
+
+  provisioner "file" {
     source      = "${path.module}/../../scripts/sql/init.sql"
     destination = "/tmp/init.sql"
   }
@@ -58,6 +63,11 @@ resource "aws_instance" "backend" {
   provisioner "file" {
     source      = "${path.module}/../../scripts/sql/inserts.sql"
     destination = "/tmp/inserts.sql"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/../../scripts/sql/insert_feriado.sql"
+    destination = "/tmp/insert_feriado.sql"
   }
 
   provisioner "file" {
@@ -90,6 +100,7 @@ resource "aws_instance" "backend" {
       "echo 'Configurando banco de dados...'", 
       "mysql -u root -proot123 < /tmp/init.sql",
       "mysql -u root -proot123 < /tmp/inserts.sql",
+      "mysql -u root -proot123 < /tmp/insert_feriado.sql",
       "echo 'Criando script para iniciar Docker...'",
       "cat > /tmp/start_docker.sh << 'EOF'",
       "#!/bin/bash",
@@ -100,6 +111,8 @@ resource "aws_instance" "backend" {
       "sleep 5", 
       "echo \"Iniciando RabbitMQ container...\"",
       "docker-compose -f compose-rabbit.yaml up -d",
+      "echo \"Iniciando Redis container...\"",
+      "docker-compose -f compose-redis.yaml up -d",
       "echo \"Verificando containers...\"",
       "docker ps",
       "EOF",

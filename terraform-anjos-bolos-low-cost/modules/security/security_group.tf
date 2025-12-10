@@ -104,6 +104,13 @@ resource "aws_security_group" "sg_acesso_remoto_priv" {
     cidr_blocks = ["10.25.0.0/26"]
   }
 
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["10.25.0.0/26"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
