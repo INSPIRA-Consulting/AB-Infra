@@ -44,7 +44,7 @@ def baixar_feriados_brasileiros():
     }
     
     anos = ['2024', '2025']
-    colunas_padrao = ['data', 'nome', 'tipo', 'descricao', 'uf', 'municipio']
+    colunas_padrao = ['data', 'nome', 'tipo', 'descricao', 'uf', 'codigo_ibge']
     
     s3 = boto3.client('s3')
     sucessos = 0
