@@ -26,11 +26,11 @@ INSERT INTO Ingrediente (nome, custoMedida) VALUES
 -- Categorias de Produto
 -- =======================
 INSERT INTO Categoria_Produto (nome, descricao) VALUES
-('Bolo Tradicional', 'Bolos simples e caseiros'),
-('Bebida', 'Bebidas diversas da casa'),
+('Bolos Tradicionais', 'Bolos simples e caseiros'),
+('Bebidas', 'Bebidas diversas da casa'),
 ('Salgados', 'Salgados assados e fritos'),
-('Bolo de Pote', 'Bolos individuais servidos no pote'),
-('Bolo de Festa', 'Bolos decorados e personalizados');
+('Bolos de Pote', 'Bolos individuais servidos no pote'),
+('Bolos de Festa', 'Bolos decorados e personalizados');
 
 -- =======================
 -- Produtos
